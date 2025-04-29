@@ -1,0 +1,50 @@
+/* Ensure the entire page fits within the viewport */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent unwanted scrolling */
+  }
+  
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full height of viewport */
+  }
+  
+  /* Header takes 10% of the screen height */
+  .header {
+    height: 10vh;
+    width: 100%;
+    background-color: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Sidebar & Content are side by side */
+  .main-layout {
+    display: flex;
+    flex-grow: 1; /* Takes the remaining space below the header */
+    overflow: hidden;
+  }
+  
+  /* Sidebar with fixed width */
+  .sidebar {
+    width: 250px;
+    height: 100%;
+    background-color: #1f2937;
+    color: white;
+    padding: 20px;
+  }
+  
+  /* Content area fills remaining space */
+  .content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f9fafb;
+    overflow-y: auto; /* Enables scrolling only if needed */
+  }
+  

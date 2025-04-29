@@ -1,0 +1,75 @@
+/* Centering the login page */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f4f7fc; /* Light background for contrast */
+  }
+  
+  /* WorkKeeper Title */
+  .app-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Login Card */
+  .login-card {
+    width: 350px; /* Fixed width to avoid stretching */
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Login Title */
+  .login-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #444;
+    text-align: center;
+  }
+  
+  /* Error Message */
+  .error-message {
+    color: red;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  /* Login Button */
+  .login-button {
+    background-color: #1976d2 !important;
+    color: white !important;
+    font-weight: bold !important;
+    padding: 10px !important;
+    border-radius: 5px !important;
+    margin-top: 10px !important;
+  }
+  
+  /* Forgot Password Link */
+  .login-links {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .forgot-password {
+    color: #1976d2;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .forgot-password:hover {
+    text-decoration: underline;
+  }
+  

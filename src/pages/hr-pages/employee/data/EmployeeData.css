@@ -1,0 +1,84 @@
+.employee-table-container {
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    border: 2px solid rgba(41, 37, 37, 0.5);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+  }
+  
+  h2 {
+    text-align: center;
+    font-size: 22px;
+    color: #0f0a0a;
+    margin-bottom: 15px;
+  }
+  
+  .table-wrapper {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    max-width: 100%;
+  }
+  
+  .table-container {
+    min-width: 900px; /* Ensure table has enough space */
+  }
+  
+  .table-header {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .table-row:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .status {
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  
+  .action-button {
+    margin: 5px;
+    white-space: nowrap; /* Prevents buttons from breaking into two lines */
+  }
+  
+  .table-container {
+    min-width: 900px; /* Ensures horizontal scrolling */
+  }
+  
+  .table-wrapper {
+    overflow-x: auto; /* Enables left-right scrolling */
+    max-width: 100%;
+  }
+  
+  .table-header th,
+  .table-row td {
+    white-space: nowrap; /* Ensures text stays in one line */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adds "..." for long text */
+    padding: 8px;
+    border: solid 2px;
+  }
+  
+  .header-row {
+    position: relative;
+    display: flex;
+    justify-content: center; /* Centers the heading */
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px 0;
+  }
+  
+  .employee-heading {
+    text-align: center;
+    flex: 1;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  

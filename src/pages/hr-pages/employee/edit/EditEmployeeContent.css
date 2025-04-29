@@ -1,0 +1,86 @@
+/* Container Styling */
+.edit-employee-container {
+  max-width: 900px;
+  width: 100%;
+  margin: 40px auto;
+  padding: 25px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(41, 37, 37, 0.2));
+  border-radius: 15px;
+  border: 2px solid rgba(41, 37, 37, 0.5);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+/* Header */
+h2 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #161515;
+  margin-bottom: 25px;
+}
+
+/* Form Styling */
+.employee-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Two fields per row using Grid */
+.form-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* Input Fields */
+.MuiTextField-root,
+.MuiFormControl-root {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Input Focus Effect */
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #ffffff !important;
+}
+
+/* Status Dropdown */
+.MuiSelect-root {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* Submit Button */
+.MuiButton-root {
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.MuiButton-root:hover {
+  background: linear-gradient(90deg, #0056b3, #004494);
+}
+
+/* Responsive: Stack inputs on smaller screens */
+@media (max-width: 600px) {
+  .form-group {
+    grid-template-columns: 1fr; /* Stack inputs in single column */
+  }
+}
+.edit-employee-container {
+  max-height: 100vh; /* Prevents overflow beyond viewport height */
+  overflow: hidden; /* Hides unnecessary scrolling */
+  padding: 16px;
+}
+
+.employee-form {
+  max-height: calc(100vh - 100px); /* Ensures form fits inside dialog */
+  overflow-y: auto; /* Enables scrolling only inside form if needed */
+}

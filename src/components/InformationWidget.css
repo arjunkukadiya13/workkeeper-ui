@@ -1,0 +1,41 @@
+.info-widget {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content */
+  border: 2px solid rgb(41, 37, 37);
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-radius: 12px;
+  width: 250px;  /* Fixed width for all widgets */
+  min-height: 75px; /*  Ensures consistent height */
+  margin: 5px;
+  flex-shrink: 0;
+  flex-grow: 1; /*  Helps distribute space evenly */
+}
+
+.icon-container {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.info-content h3 {
+  margin: 5px 0;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Ensure Parent Container Displays Widgets in a Row */
+.widget-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start; 
+}
