@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { TextField, Button, Card, Typography, InputAdornment, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import userApi from "../services/authService";
 import "./LoginPage.css";
+import AuthService from "../services/authService";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ const LoginPage = () => {
     }
 
     try {
-      const data = await userApi.login(email, password);
+      const data = await AuthService.login(email, password);
       console.log(data.user.role.roleName);
       localStorage.setItem("authToken", data.token);
       const roleName = data.user.role.roleName.toLowerCase();

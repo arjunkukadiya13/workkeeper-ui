@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Grid, Autocomplete, Alert } from "@mui/material";
 import "./EditEmployeeContent.css";
 import { useParams, useNavigate } from "react-router-dom";
-import employeeService from "../../../../services/employeeService";
+// import employeeService from "../../../../services/employeeService";
 import addEmployeeService from "../../../../services/addEmployeeService"; // Assuming you're using the same service for fetching options
+import EmployeeService from "../../../../services/employeeService";
 
 const EditEmployeeContent = () => {
   const { id } = useParams();
@@ -59,7 +60,7 @@ const EditEmployeeContent = () => {
   useEffect(() => {
     const fetchEmployeeData = async () => {
       try {
-        const response = await employeeService.getEmployeeById(id);
+        const response = await EmployeeService.getEmployeeById(id);
         setFormData({
           name: response.name || "",
           personalEmail: response.personalEmail || "",
@@ -92,7 +93,7 @@ const EditEmployeeContent = () => {
   const updateEmployee = async (updatedEmployeeData) => {
     console.log(updatedEmployeeData)
     try {
-      await employeeService.updateEmployee(updatedEmployeeData, id);
+      await EmployeeService.updateEmployee(updatedEmployeeData, id);
       setSuccessMessage("Employee updated successfully!");
       setTimeout(() => setSuccessMessage(""), 3000); // Clear the success message after 3 seconds
       navigate(-1); // Go back to the previous page after update
