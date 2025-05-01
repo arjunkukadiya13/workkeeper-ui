@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Grid, Autocomplete, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import "./AddEmployeeContent.css";
-import addEmployeeService from "../../../../services/addEmployeeService";
+// import addEmployeeService from "../../../../services/addEmployeeService";
+import DepartmentService from "../../../../services/departmentService";
+import RoleServices from "../../../../services/roleServices";
+import EmployeeService from "../../../../services/employeeService";
+import OfficeServices from "../../../../services/officeServices";
+import TeamServices from "../../../../services/teamServices";
 
 const AddEmployeeContent = () => {
   const [formData, setFormData] = useState({
@@ -35,17 +40,18 @@ const AddEmployeeContent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const departmentsData = await addEmployeeService.getDepartment();
-        const rolesData = await addEmployeeService.getRole();
-        const teamsData = await addEmployeeService.getTeams();
-        const reportingManagersData = await addEmployeeService.getEmployee();
-        const offices = await addEmployeeService.getOffice();
+       
+        // const departmentsData = await DepartmentService.getDepartment();
+        // const rolesData = await RoleServices.getRoles();
+        // const teamsData = await TeamServices.getTeams();
+        // const reportingManagersData = await EmployeeService.getEmployee();
+        // const offices = await  OfficeServices.getOffices();
 
-        setDepartments(departmentsData);
-        setRoles(rolesData);
-        setTeams(teamsData);
-        setReportingManagers(reportingManagersData);
-        setOffices(offices);
+        setDepartments(await DepartmentService.getDepartment());
+        setRoles(await RoleServices.getRoles());
+        setTeams(await TeamServices.getTeams());
+        setReportingManagers(await EmployeeService.getEmployee());
+        setOffices(await  OfficeServices.getOffices());
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -101,7 +107,7 @@ const AddEmployeeContent = () => {
     };
 
     try {
-      await addEmployeeService.addEmployee(formattedData);
+      await EmployeeService.addEmployee(formattedData);
       setSuccessMessage("Employee added successfully!");
 
       resetForm(); 

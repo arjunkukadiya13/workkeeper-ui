@@ -1,3 +1,5 @@
+import httpClient from "./httpClient";
+
 class TeamServices{
     static async getTeams(){
         const response = await httpClient.get("/Team",{});

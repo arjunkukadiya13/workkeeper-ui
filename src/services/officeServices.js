@@ -1,3 +1,5 @@
+import httpClient from "./httpClient";
+
 class OfficeServices{
     static async getOffices(){
         const response = await httpClient.get("/Office",{});

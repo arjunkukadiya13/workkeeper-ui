@@ -3,8 +3,12 @@ import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Grid, Aut
 import "./EditEmployeeContent.css";
 import { useParams, useNavigate } from "react-router-dom";
 // import employeeService from "../../../../services/employeeService";
-import addEmployeeService from "../../../../services/addEmployeeService"; // Assuming you're using the same service for fetching options
+// import addEmployeeService from "../../../../services/addEmployeeService"; 
 import EmployeeService from "../../../../services/employeeService";
+import DepartmentService from "../../../../services/departmentService";
+import RoleServices from "../../../../services/roleServices";
+import TeamServices from "../../../../services/teamServices";
+import OfficeServices from "../../../../services/officeServices";
 
 const EditEmployeeContent = () => {
   const { id } = useParams();
@@ -38,11 +42,12 @@ const EditEmployeeContent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const departmentsData = await addEmployeeService.getDepartment();
-        const rolesData = await addEmployeeService.getRole();
-        const teamsData = await addEmployeeService.getTeams();
-        const reportingManagersData = await addEmployeeService.getEmployee();
-        const offices = await addEmployeeService.getOffice();
+        
+        const departmentsData = await DepartmentService.getDepartment();
+        const rolesData = await RoleServices.getRoles();
+        const teamsData = TeamServices.getTeams();
+        const reportingManagersData = await  EmployeeService.getEmployee();
+        const offices = await OfficeServices.getOffices();
 
         setDepartments(departmentsData);
         setRoles(rolesData);
@@ -108,10 +113,10 @@ const EditEmployeeContent = () => {
 
     const updatedEmployeeData = {
       ...formData,
-      updatedAt: new Date().toISOString(), // Add a timestamp for the update
+      updatedAt: new Date().toISOString(), 
     };
 
-    updateEmployee(updatedEmployeeData); // Call the updateEmployee function
+    updateEmployee(updatedEmployeeData); 
   };
 
   return (
