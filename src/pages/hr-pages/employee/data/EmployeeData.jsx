@@ -29,14 +29,10 @@ const EmployeeData = () => {
   const navigate = useNavigate();
 
   const fetchEmployeeData = async () => {
-    try {
       const userData = await employeeService.getEmployee();
-      // console.log("Employee Data:", userData);
       setEmployees(userData);
       setFilteredEmployees(userData);
-    } catch (error) {
-      console.error("Error fetching employee data:", error);
-    }
+    
   };
 
   useEffect(() => {
@@ -63,7 +59,7 @@ const EmployeeData = () => {
 
     if (filterDepartment) {
       updatedEmployees = updatedEmployees.filter(
-        (emp) => emp.department.departmentName === filterDepartment
+        (emp) => emp.departmentName === filterDepartment
       );
     }
 
@@ -75,7 +71,7 @@ const EmployeeData = () => {
 
     if (filterRole) {
       updatedEmployees = updatedEmployees.filter(
-        (emp) => emp.role.roleName === filterRole
+        (emp) => emp.roleName === filterRole
       );
     }
 
@@ -83,8 +79,8 @@ const EmployeeData = () => {
   }, [searchName, filterDepartment, filterStatus, filterRole, employees]);
 
   // Extract unique departments and roles
-  const departments = [...new Set(employees.map((emp) => emp.department.departmentName))];
-  const roles = [...new Set(employees.map((emp) => emp.role.roleName))];
+  const departments = [...new Set(employees.map((emp) => emp.departmentName))];
+  const roles = [...new Set(employees.map((emp) => emp.roleName))];
 
   return (
     <div className="employee-table-container">
@@ -198,10 +194,10 @@ const EmployeeData = () => {
                   <TableCell>{employee.personalMobile}</TableCell>
                   <TableCell>{employee.alternateMobile}</TableCell>
                   <TableCell>{employee.designation}</TableCell>
-                  <TableCell>{employee.department.departmentName}</TableCell>
-                  <TableCell>{employee.office.officeName}</TableCell>
+                  <TableCell>{employee.departmentName}</TableCell>
+                  <TableCell>{employee.officeName}</TableCell>
                   <TableCell>{employee.status}</TableCell>
-                  <TableCell>{employee.role.roleName}</TableCell>
+                  <TableCell>{employee.roleName}</TableCell>
                   <TableCell style={{ borderBottom: "none" }}>
                     <div style={{ display: "flex", gap: "8px" }}>
                       <button
