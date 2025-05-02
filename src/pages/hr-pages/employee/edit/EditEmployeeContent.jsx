@@ -17,7 +17,7 @@ const EditEmployeeContent = () => {
   const [formData, setFormData] = useState({
     name: "",
     personalEmail: "",
-    organizationalEmail: "",
+    organizationEmail: "",
     personalMobile: "",
     alternateMobile: "",
     departmentId: "",
@@ -25,7 +25,7 @@ const EditEmployeeContent = () => {
     officeId: "",
     teamId: "",
     reportingEmployeeId: "",
-    lineManager: "",
+    lineManagerId: "",
     designation: "",
     yearOfExpTotal: "",
     yearOfExpOrganization: "",
@@ -41,22 +41,19 @@ const EditEmployeeContent = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
+      
         
-        const departmentsData = await DepartmentService.getDepartment();
-        const rolesData = await RoleServices.getRoles();
-        const teamsData = TeamServices.getTeams();
-        const reportingManagersData = await  EmployeeService.getEmployee();
-        const offices = await OfficeServices.getOffices();
-
-        setDepartments(departmentsData);
-        setRoles(rolesData);
-        setTeams(teamsData);
-        setReportingManagers(reportingManagersData);
-        setOffices(offices);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
+        // const departmentsData = await DepartmentService.getDepartment();
+        // const rolesData = await RoleServices.getRoles();
+        // const teamsData = await TeamServices.getTeams();
+        // const reportingManagersData = await  EmployeeService.getEmployee();
+        // const offices = await OfficeServices.getOffices();
+        setDepartments(await DepartmentService.getDepartment());
+        setRoles(await RoleServices.getRoles());
+        setTeams(await TeamServices.getTeams());
+        setReportingManagers(await  EmployeeService.getEmployee());
+        setOffices(await OfficeServices.getOffices());
+      
     };
 
     fetchData();
@@ -64,33 +61,31 @@ const EditEmployeeContent = () => {
 
   useEffect(() => {
     const fetchEmployeeData = async () => {
-      try {
+      
         const response = await EmployeeService.getEmployeeById(id);
         setFormData({
           name: response.name || "",
           personalEmail: response.personalEmail || "",
-          organizationalEmail: response.organizationEmail || "",
+          organizationEmail: response.organizationEmail || "",
           personalMobile: response.personalMobile || "",
           alternateMobile: response.alternateMobile || "",
-          departmentId: response.department?.id || "",
-          roleId: response.role?.id || "",
-          officeId: response.office?.id || "",
-          teamId: response.team?.id || "",
-          reportingEmployeeId: response.reportingEmployee?.id || "",
+          departmentId: response.departmentId || "",
+          roleId: response.roleId || "",
+          officeId: response.officeId || "",
+          teamId: response.teamId || "",
+          reportingEmployeeId: response.reportingEmployeeId || "",
           lineManagerId: response.lineManagerId || "",
           designation: response.designation || "",
-          yearOfExpTotal: response.yearOfExpTotal || "",
-          yearOfExpOrganization: response.yearOfExpOrganization || "",
+          yearOfExpTotal: response.yearOfExpTotal ?? "",
+          yearOfExpOrganization: response.yearOfExpOrganization ?? "",
           status: response.status || "Active",
         });
-      } catch (error) {
-        console.error("Failed to fetch employee data:", error);
-      }
+       
     };
 
     fetchEmployeeData();
   }, [id]);
-
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -151,7 +146,7 @@ const EditEmployeeContent = () => {
               <TextField label="Personal Email" name="personalEmail" value={formData.personalEmail} type="email" fullWidth required onChange={handleChange} />
             </Grid>
             <Grid item xs={4}>
-              <TextField label="Organizational Email" name="organizationalEmail" value={formData.organizationalEmail} type="email" fullWidth required onChange={handleChange} />
+              <TextField label="Organizational Email" name="organizationEmail" value={formData.organizationEmail} type="email" fullWidth required onChange={handleChange} />
             </Grid>
             <Grid item xs={4}>
               <TextField label="Personal Mobile" name="personalMobile" value={formData.personalMobile} type="tel" fullWidth required onChange={handleChange} />
@@ -214,10 +209,20 @@ const EditEmployeeContent = () => {
               />
             </Grid>
 
-            {/* Other fields */}
             <Grid item xs={4}>
-              <TextField label="Line Manager" name="lineManager" value={formData.lineManager} fullWidth required onChange={handleChange} />
+              <Autocomplete
+                options={reportingManagers}
+                getOptionLabel={(option) => option.name}
+                onChange={(event, newValue) => setFormData({ ...formData, lineManagerId: newValue?.id || "" })}
+                value={reportingManagers.find((l) => l.id === formData.lineManagerId) || null}
+                renderInput={(params) => <TextField {...params} label="Line Manager" fullWidth required />}
+              />
             </Grid>
+
+            {/* Other fields */}
+            {/* <Grid item xs={4}>
+              <TextField label="Line Manager" name="lineManager" value={formData.lineManager} fullWidth required onChange={handleChange} />
+            </Grid> */}
             <Grid item xs={4}>
               <TextField label="Designation" name="designation" value={formData.designation} fullWidth required onChange={handleChange} />
             </Grid>

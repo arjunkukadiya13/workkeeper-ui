@@ -46,7 +46,7 @@ const AddEmployeeContent = () => {
         // const teamsData = await TeamServices.getTeams();
         // const reportingManagersData = await EmployeeService.getEmployee();
         // const offices = await  OfficeServices.getOffices();
-
+        // console.log(await TeamServices.getTeams())
         setDepartments(await DepartmentService.getDepartment());
         setRoles(await RoleServices.getRoles());
         setTeams(await TeamServices.getTeams());
