@@ -18,29 +18,34 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import "./EmployeeData.css";
-import employeeService from "../../../../services/employeeService";
+import EmployeeService from "../../../../services/employeeService";
 
 const EmployeeData = () => {
   const [employees, setEmployees] = useState([]);
-  const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const rowsPerPage = 5;
+
   const [searchName, setSearchName] = useState("");
   const [filterDepartment, setFilterDepartment] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterRole, setFilterRole] = useState("");
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 5;
 
   const navigate = useNavigate();
 
   const fetchEmployeeData = async () => {
-    const userData = await employeeService.getEmployee();
-    setEmployees(userData);
-    setFilteredEmployees(userData);
+    try {
+      const data = await EmployeeService.getEmployeesPaginated(page, rowsPerPage);
+      setEmployees(data.employees);
+      setTotalCount(data.totalCount);
+    } catch (error) {
+      console.error("Failed to fetch employees", error);
+    }
   };
 
   useEffect(() => {
     fetchEmployeeData();
-  }, []);
+  }, [page]);
 
   const handleNavigateToAdd = () => {
     navigate("/hr/employee/add-employee");
@@ -50,48 +55,18 @@ const EmployeeData = () => {
     navigate(`/hr/employee/edit-employee/${employeeId}`);
   };
 
-  // Filter Logic
-  useEffect(() => {
-    let updatedEmployees = employees;
+  const handleFilter = () => {
+    // Add logic here to apply the filters based on the selected values
+    console.log("Filters applied:", {
+      searchName,
+      filterDepartment,
+      filterStatus,
+      filterRole,
+    });
+    // You can call the API to fetch filtered data here if required
+  };
 
-    if (searchName) {
-      updatedEmployees = updatedEmployees.filter((emp) =>
-        emp.name.toLowerCase().includes(searchName.toLowerCase())
-      );
-    }
-
-    if (filterDepartment) {
-      updatedEmployees = updatedEmployees.filter(
-        (emp) => emp.departmentName === filterDepartment
-      );
-    }
-
-    if (filterStatus) {
-      updatedEmployees = updatedEmployees.filter(
-        (emp) => emp.status === filterStatus
-      );
-    }
-
-    if (filterRole) {
-      updatedEmployees = updatedEmployees.filter(
-        (emp) => emp.roleName === filterRole
-      );
-    }
-
-    setFilteredEmployees(updatedEmployees);
-    setPage(1); // Reset to page 1 when filters change
-  }, [searchName, filterDepartment, filterStatus, filterRole, employees]);
-
-  const departments = [...new Set(employees.map((emp) => emp.departmentName))];
-  const roles = [...new Set(employees.map((emp) => emp.roleName))];
-
-  // Calculate paginated data
-  const paginatedEmployees = filteredEmployees.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
-
-  const pageCount = Math.ceil(filteredEmployees.length / rowsPerPage);
+  const pageCount = Math.ceil(totalCount / rowsPerPage);
 
   return (
     <div className="employee-table-container">
@@ -118,7 +93,7 @@ const EmployeeData = () => {
         </Button>
       </div>
 
-      {/* Filters */}
+      {/* Filters UI */}
       <div style={{ display: "flex", gap: "20px", margin: "20px 0" }}>
         <TextField
           label="Search by Name"
@@ -136,11 +111,7 @@ const EmployeeData = () => {
             label="Department"
           >
             <MenuItem value="">All</MenuItem>
-            {departments.map((dept) => (
-              <MenuItem key={dept} value={dept}>
-                {dept}
-              </MenuItem>
-            ))}
+            {/* Add department options here dynamically */}
           </Select>
         </FormControl>
 
@@ -165,16 +136,26 @@ const EmployeeData = () => {
             label="Role"
           >
             <MenuItem value="">All</MenuItem>
-            {roles.map((role) => (
-              <MenuItem key={role} value={role}>
-                {role}
-              </MenuItem>
-            ))}
+            {/* Add role options here dynamically */}
           </Select>
         </FormControl>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleFilter}
+          sx={{
+            padding: "6px 16px",
+            fontWeight: "bold",
+            fontSize: "14px",
+            height: "fit-content",
+            alignSelf: "flex-end",
+          }}
+        >
+          Apply Filters
+        </Button>
       </div>
 
-      {/* Employee Table */}
       <div className="table-wrapper">
         <TableContainer component={Paper} className="table-container">
           <Table>
@@ -195,7 +176,7 @@ const EmployeeData = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedEmployees.map((employee) => (
+              {employees.map((employee) => (
                 <TableRow key={employee.id} className="table-row">
                   <TableCell>{employee.id}</TableCell>
                   <TableCell>{employee.name}</TableCell>

@@ -9,6 +9,14 @@ class EmployeeService{
       throw error;
     }
   }
+  static async getEmployeesPaginated(pageNumber, pageSize){
+      try{
+        const response = await httpClient.get(`/Employee/paginated?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+        return response.data;
+      }catch (error){
+        throw error;
+      }
+  }
 
   static async addEmployee(data){
     try{
