@@ -13,6 +13,7 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  Pagination,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
@@ -26,13 +27,15 @@ const EmployeeData = () => {
   const [filterDepartment, setFilterDepartment] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterRole, setFilterRole] = useState("");
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 5;
+
   const navigate = useNavigate();
 
   const fetchEmployeeData = async () => {
-      const userData = await employeeService.getEmployee();
-      setEmployees(userData);
-      setFilteredEmployees(userData);
-    
+    const userData = await employeeService.getEmployee();
+    setEmployees(userData);
+    setFilteredEmployees(userData);
   };
 
   useEffect(() => {
@@ -76,15 +79,22 @@ const EmployeeData = () => {
     }
 
     setFilteredEmployees(updatedEmployees);
+    setPage(1); // Reset to page 1 when filters change
   }, [searchName, filterDepartment, filterStatus, filterRole, employees]);
 
-  // Extract unique departments and roles
   const departments = [...new Set(employees.map((emp) => emp.departmentName))];
   const roles = [...new Set(employees.map((emp) => emp.roleName))];
 
+  // Calculate paginated data
+  const paginatedEmployees = filteredEmployees.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
+
+  const pageCount = Math.ceil(filteredEmployees.length / rowsPerPage);
+
   return (
     <div className="employee-table-container">
-
       <div className="header-row">
         <h2 className="employee-heading">Employee Details</h2>
         <Button
@@ -185,7 +195,7 @@ const EmployeeData = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredEmployees.map((employee) => (
+              {paginatedEmployees.map((employee) => (
                 <TableRow key={employee.id} className="table-row">
                   <TableCell>{employee.id}</TableCell>
                   <TableCell>{employee.name}</TableCell>
@@ -234,6 +244,16 @@ const EmployeeData = () => {
             </TableBody>
           </Table>
         </TableContainer>
+      </div>
+
+      {/* Pagination */}
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+        <Pagination
+          count={pageCount}
+          page={page}
+          onChange={(event, value) => setPage(value)}
+          color="primary"
+        />
       </div>
     </div>
   );

@@ -17,8 +17,6 @@ const LoginPage = () => {
       setError("Please enter both email and password.");
       return;
     }
-
-    try {
       const data = await AuthService.login(email, password);
       console.log(data.user.role.roleName);
       localStorage.setItem("authToken", data.token);
@@ -30,9 +28,7 @@ const LoginPage = () => {
 
       }
       
-    } catch (err) {
-      setError("Login failed Invalid Credentials");
-    }
+    
   };
 
   const handleTogglePassword = () => {
