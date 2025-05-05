@@ -1,0 +1,29 @@
+.settings-container {
+    padding: 20px;
+    max-width: 500px;
+    margin: auto;
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .settings-card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  .theme-select {
+    margin-top: 10px;
+  }
+  
+  .save-button {
+    display: block;
+    margin-top: 20px;
+    width: 100%;
+  }
+  

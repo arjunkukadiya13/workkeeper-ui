@@ -30,7 +30,6 @@ class EmployeeService{
   static async getEmployeeById(id){
     try{
       const response = await httpClient.get(`/Employee/${id}`);
-      // console.log(response.data.name);
       return response.data;
   
     }catch(error){
@@ -60,7 +59,6 @@ const employeeService = {
   getEmployeeById: async (id)=> {
     try{
     const response = await httpClient.get(`/Employee/${id}`);
-    // console.log(response.data.name);
     return response.data;
 
   }catch(error){

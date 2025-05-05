@@ -7,6 +7,7 @@ const AttendancePage = lazy(() => import("./pages/hr-pages/AttendancePage"));
 const Employee = lazy(() => import("./pages/hr-pages/Employee"));
 const AddEmployee = lazy(() => import("../src/pages/hr-pages/employee/AddEmployee"));
 const EditEmployee = lazy(() => import("../src/pages/hr-pages/employee/EditEmployee"));
+const SettingPage = lazy(() => import("../src/pages/hr-pages/SettingPage"));
 const EmployeeDashboard = lazy(() => import("../src/pages/employee/EmployeeDashboard"));
 const EmployeeAttendance = lazy(() => import("../src/pages/employee/EmployeeAttendance"));
 const PageNotFound = lazy(() => import("./pages/PageNotFound"));
@@ -23,6 +24,7 @@ const AppRoutes = () => {
         <Route path="/hr/dashboard" element={<Dashboard />} />
         <Route path="/hr/attendance" element={<AttendancePage />} />
         <Route path="/hr/employee" element={<Employee />} />
+        <Route path="/hr/settings" element={<SettingPage />} />
         <Route path="/hr/employee/add-employee" element={<AddEmployee />} />
         <Route path="/hr/employee/edit-employee/:id" element={<EditEmployee />} />
 
