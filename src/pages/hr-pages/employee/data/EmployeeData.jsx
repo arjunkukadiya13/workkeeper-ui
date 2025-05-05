@@ -19,20 +19,27 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import "./EmployeeData.css";
 import EmployeeService from "../../../../services/employeeService";
+import DepartmentService from "../../../../services/departmentService";
 
 const EmployeeData = () => {
   const [employees, setEmployees] = useState([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const rowsPerPage = 5;
+  const [departments, setDepartments] = useState([]);
+
 
   const [searchName, setSearchName] = useState("");
   const [filterDepartment, setFilterDepartment] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterRole, setFilterRole] = useState("");
 
+
   const navigate = useNavigate();
 
+  const fetchDepartments = async () =>{
+    setDepartments(await DepartmentService.getDepartment());
+  }
   const fetchEmployeeData = async () => {
     try {
       const data = await EmployeeService.getEmployeesPaginated(page, rowsPerPage);
@@ -44,6 +51,7 @@ const EmployeeData = () => {
   };
 
   useEffect(() => {
+    fetchDepartments();
     fetchEmployeeData();
   }, [page]);
 
@@ -56,14 +64,12 @@ const EmployeeData = () => {
   };
 
   const handleFilter = () => {
-    // Add logic here to apply the filters based on the selected values
     console.log("Filters applied:", {
       searchName,
       filterDepartment,
       filterStatus,
       filterRole,
     });
-    // You can call the API to fetch filtered data here if required
   };
 
   const pageCount = Math.ceil(totalCount / rowsPerPage);
@@ -111,7 +117,12 @@ const EmployeeData = () => {
             label="Department"
           >
             <MenuItem value="">All</MenuItem>
-            {/* Add department options here dynamically */}
+            {departments.map((d)=> {
+              return(
+                <MenuItem key={d.id} value={d.departmentName}>
+                 {d.departmentName}
+                </MenuItem>);
+            })}
           </Select>
         </FormControl>
 
