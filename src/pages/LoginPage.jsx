@@ -4,6 +4,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
 import AuthService from "../services/authService";
+import { useDispatch } from "react-redux";
+import { userLogin } from "../data/userData/loginSlice";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -11,14 +13,14 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false); 
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const handleLogin = async () => {
     if (!email || !password) {
       setError("Please enter both email and password.");
       return;
     }
       const data = await AuthService.login(email, password);
-      console.log(data.user.role.roleName);
+      dispatch(userLogin());
       localStorage.setItem("authToken", data.token);
       const roleName = data.user.role.roleName.toLowerCase();
       if(roleName=="hr manager"){
