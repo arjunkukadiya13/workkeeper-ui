@@ -36,6 +36,16 @@ class EmployeeService{
       throw error;
     }
   }
+  static async getEmployeeByEmail(email){
+    try{
+      const response = await httpClient.get("/Employee/by-email",{
+        params:{email}});
+      return response.data;
+  
+    }catch(error){
+      throw error;
+    }
+  }
 
   static async updateEmployee(data,id){
     try{

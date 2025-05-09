@@ -6,6 +6,8 @@ import "./LoginPage.css";
 import AuthService from "../services/authService";
 import { useDispatch } from "react-redux";
 import { userLogin } from "../data/userData/loginSlice";
+import { setUserData } from "../data/userData/userSlice";
+import EmployeeService from "../services/employeeService";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -22,6 +24,7 @@ const LoginPage = () => {
       const data = await AuthService.login(email, password);
       dispatch(userLogin());
       localStorage.setItem("authToken", data.token);
+      dispatch(setUserData(await EmployeeService.getEmployeeByEmail(email)))
       const roleName = data.user.role.roleName.toLowerCase();
       if(roleName=="hr manager"){
         navigate("/hr/dashboard");

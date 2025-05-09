@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { TextField, Button, Typography, Card, CardContent } from "@mui/material";
 import "./SettingPageContent.css"
+import { useSelector } from "react-redux";
 
 
 const SettingPageContent = () => {
+  const userData = useSelector((state)=>state.userData)
+  console.log(userData);
 
   return (
     <div className="settings-container">
