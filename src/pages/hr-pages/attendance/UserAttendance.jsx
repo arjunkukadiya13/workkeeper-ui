@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./UserAttendance.css";
+import AttendanceService from "../../../services/attendanceService";
 
 const initialAttendanceLogs = [
   { date: "2025-04-07", time: "09:00", type: "In" },
@@ -28,7 +29,7 @@ const UserAttendance = () => {
   });
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       const currentTime = new Date();
       setFormData((prev) => ({
         ...prev,
