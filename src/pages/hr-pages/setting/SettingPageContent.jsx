@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 
 const SettingPageContent = () => {
   const userData = useSelector((state)=>state.userData)
-  console.log(userData);
 
   return (
     <div className="settings-container">
@@ -21,12 +20,14 @@ const SettingPageContent = () => {
             label="Full Name"
             name="name"
             fullWidth
+            value={userData.name}
             margin="normal"
           />
 
           <TextField
             label="Email"
             name="email"
+            value={userData.personalEmail}
             fullWidth
             margin="normal"
           />
@@ -34,6 +35,7 @@ const SettingPageContent = () => {
           <TextField
             label="Mobile Number"
             name="mobile_no"
+            value={userData.personalMobile}
             fullWidth
             margin="normal"
           />
