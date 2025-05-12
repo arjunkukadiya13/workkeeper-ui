@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./UserAttendance.css";
-import AttendanceService from "../../../services/attendanceService";
+import { useSelector } from "react-redux";
 
 const initialAttendanceLogs = [
   { date: "2025-04-07", time: "09:00", type: "In" },
@@ -20,7 +20,9 @@ const formatDate = (date) => date.toISOString().split("T")[0];
 const formatTime = (date) => date.toTimeString().slice(0, 5);
 
 const UserAttendance = () => {
+  const userData = useSelector((state) => state.userData); 
   const [attendanceLogs, setAttendanceLogs] = useState(initialAttendanceLogs);
+
   const now = new Date();
   const [formData, setFormData] = useState({
     date: formatDate(now),
@@ -29,7 +31,7 @@ const UserAttendance = () => {
   });
 
   useEffect(() => {
-    const interval = setInterval(async () => {
+    const interval = setInterval(() => {
       const currentTime = new Date();
       setFormData((prev) => ({
         ...prev,
@@ -41,7 +43,6 @@ const UserAttendance = () => {
   }, []);
 
   useEffect(() => {
-    // Auto-set type based on last log
     if (attendanceLogs.length > 0) {
       const lastLog = attendanceLogs[0];
       const nextType = lastLog.type === "In" ? "Out" : "In";
@@ -73,7 +74,6 @@ const UserAttendance = () => {
     };
 
     setAttendanceLogs((prevLogs) => [newLog, ...prevLogs]);
-    // No need to reset formData because useEffect will auto-set type after adding
   };
 
   return (
@@ -84,23 +84,19 @@ const UserAttendance = () => {
       <div className="attendance-details">
         <div className="attendance-detail">
           <label>Employee Name:</label>
-          <span>{employeeData.name}</span>
-        </div>
-        <div className="attendance-detail">
-          <label>Employee ID:</label>
-          <span>EMP-{employeeData.id}</span>
+          <span>{userData.name}</span>
         </div>
         <div className="attendance-detail">
           <label>Department:</label>
-          <span>{employeeData.department.departmentName}</span>
+          <span>{userData.departmentName}</span>
         </div>
         <div className="attendance-detail">
           <label>Office:</label>
-          <span>{employeeData.office.officeName}</span>
+          <span>{userData.officeName}</span>
         </div>
         <div className="attendance-detail">
           <label>Designation:</label>
-          <span>{employeeData.designation}</span>
+          <span>{userData.designation}</span>
         </div>
       </div>
 
@@ -121,26 +117,9 @@ const UserAttendance = () => {
             onChange={(e) => setFormData({ ...formData, time: e.target.value })}
           />
 
-          <div className="checkbox-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={formData.type === "In"}
-                disabled
-                readOnly
-              />
-              In
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={formData.type === "Out"}
-                disabled
-                readOnly
-              />
-              Out
-            </label>
-          </div>
+          <p className="next-type">
+            Next Entry Type: <strong>{formData.type}</strong>
+          </p>
 
           <button type="submit">Add Attendance</button>
         </form>
