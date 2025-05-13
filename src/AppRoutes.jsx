@@ -11,6 +11,7 @@ const ViewEmployee = lazy(() => import("./pages/hr-pages/employee/ViewEmployee")
 const SettingPage = lazy(() => import("./pages/hr-pages/SettingPage"));
 const EmployeeDashboard = lazy(() => import("./pages/employee/EmployeeDashboard"));
 const EmployeeAttendance = lazy(() => import("./pages/employee/EmployeeAttendance"));
+const EmployeeLeave = lazy(() => import("./pages/employee/EmployeeLeave"));
 const PageNotFound = lazy(() => import("./pages/PageNotFound"));
 const AuthContext = lazy(() => import("./AuthContext"));
 
@@ -35,6 +36,7 @@ const AppRoutes = () => {
         {/* Employee routes (protected) */}
         <Route path="/employee/dashboard" element={<AuthContext><EmployeeDashboard /></AuthContext>} />
         <Route path="/employee/attendance" element={<AuthContext><EmployeeAttendance /></AuthContext>} />
+        <Route path="/employee/leaves" element={<AuthContext><EmployeeLeave /></AuthContext>} />
 
         {/* 404 */}
         <Route path="*" element={<PageNotFound />} />
