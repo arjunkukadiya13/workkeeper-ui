@@ -36,7 +36,22 @@ const UserAttendance = () => {
   const fetchAttendanceLogs = async () => {
     try {
       const logs = await AttendanceService.getUserAttendance(userData.id);
+      logs.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      setAttendanceLogs(logs);
+
       
+      if (logs.length > 0) {
+        const nextType = logs[0].type === "In" ? "Out" : "In";
+        setFormData((prev) => ({ ...prev, type: nextType }));
+      }
+    } catch (error) {
+      console.error("Error fetching attendance logs:", error);
+    }
+  };
+
+  const fetchFilteredLogs = async (startDate,endDate) => {
+    try {
+      const logs = await AttendanceService.getLogsBetweenDates(userData.id,startDate,endDate);
       logs.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
       setAttendanceLogs(logs);
 
@@ -53,6 +68,22 @@ const UserAttendance = () => {
   useEffect(() => {
     fetchAttendanceLogs();
   }, []);
+
+  const handleDateFilter = async (e) => {
+  e.preventDefault();
+
+  if (!startDate || !endDate) {
+    alert("Please select both start and end dates!");
+    return;
+  }
+
+  if (new Date(startDate) > new Date(endDate)) {
+    alert("Start date cannot be after end date.");
+    return;
+  }
+
+  await fetchFilteredLogs(startDate, endDate);
+};
 
   const handleAddAttendance = async (e) => {
     e.preventDefault();
@@ -147,26 +178,30 @@ const UserAttendance = () => {
       </div>
 
       <div className="date-range-filter">
-        <h3>Filter Attendance by Date</h3>
-        <div className="date-picker-group">
-          <div className="date-picker">
-            <label>From Date:</label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </div>
-          <div className="date-picker">
-            <label>To Date:</label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </div>
-        </div>
+  <h3>Filter Attendance by Date</h3>
+  <form onSubmit={handleDateFilter}>
+    <div className="date-picker-group">
+      <div className="date-picker">
+        <label>From Date:</label>
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
       </div>
+      <div className="date-picker">
+        <label>To Date:</label>
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+      </div>
+    </div>
+    <button type="submit">Filter Logs</button>
+  </form>
+</div>
+
 
       <div className="attendance-logs">
         <h3>Attendance Logs</h3>

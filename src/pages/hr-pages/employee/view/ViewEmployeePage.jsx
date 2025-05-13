@@ -122,6 +122,61 @@ const ViewEmployeePage = () => {
               </CardContent>
             </Card>
           </Grid>
+          {/* Additional Info Cards */}
+<Typography variant="h6" sx={{ marginTop: 4, marginBottom: 2 }}>
+  Additional Information
+</Typography>
+<Grid container spacing={3}>
+  {/* Attendance Summary */}
+  <Grid item xs={12} sm={4}>
+    <Card className="info-card">
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Attendance Summary
+        </Typography>
+        <Typography variant="body2">Total Days Present: 220</Typography>
+        <Typography variant="body2">Total Days Absent: 10</Typography>
+        <Typography variant="body2">Last Punch: 2025-05-13 09:04 AM</Typography>
+        <Button
+          variant="text"
+          size="small"
+          sx={{ marginTop: 1, textTransform: "none" }}
+        >
+          View Full Attendance →
+        </Button>
+      </CardContent>
+    </Card>
+  </Grid>
+
+  {/* Leave Summary */}
+  <Grid item xs={12} sm={4}>
+    <Card className="info-card">
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Leave Summary
+        </Typography>
+        <Typography variant="body2">Total Leaves Taken: 12</Typography>
+        <Typography variant="body2">Casual: 5 | Sick: 4 | Earned: 3</Typography>
+        <Typography variant="body2">Remaining Leaves: 8</Typography>
+      </CardContent>
+    </Card>
+  </Grid>
+
+  {/* Performance Summary */}
+  <Grid item xs={12} sm={4}>
+    <Card className="info-card">
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Performance
+        </Typography>
+        <Typography variant="body2">Last Review Score: 4.2/5</Typography>
+        <Typography variant="body2">Reviewer: Mr. A. Sharma</Typography>
+        <Typography variant="body2">Review Date: 2025-03-10</Typography>
+      </CardContent>
+    </Card>
+  </Grid>
+</Grid>
+
         </Grid>
       </Paper>
     </div>

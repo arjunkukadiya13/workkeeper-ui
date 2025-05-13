@@ -10,6 +10,13 @@ class AttendanceService{
         const response = await httpClient.post("AttendanceLog",data)
         return response.data;
     }
+    static async getLogsBetweenDates(id, startDate, endDate) {
+    const response = await httpClient.get(
+        `AttendanceLog/between-dates-by-employee?employeeId=${id}&startDate=${startDate}&endDate=${endDate}`
+    );
+    return response.data;
+}
+
 
 }
 export default AttendanceService;
