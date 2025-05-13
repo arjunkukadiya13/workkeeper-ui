@@ -3,29 +3,24 @@ import "./UserAttendance.css";
 import { useSelector } from "react-redux";
 import AttendanceService from "../../../services/attendanceService";
 
-const initialAttendanceLogs = [
-  { date: "2025-04-07", time: "09:00", type: "In" },
-  { date: "2025-04-07", time: "18:00", type: "Out" },
-  { date: "2025-04-06", time: "09:15", type: "In" },
-];
-
-
 const formatDate = (date) => date.toISOString().split("T")[0];
 const formatTime = (date) => date.toTimeString().slice(0, 5);
 
-
 const UserAttendance = () => {
-  const userData = useSelector((state) => state.userData); 
-  const [attendanceLogs, setAttendanceLogs] = useState(initialAttendanceLogs);
-  const [newAttendance, setNewAttendance] = useState([])
+  const userData = useSelector((state) => state.userData);
+  const [attendanceLogs, setAttendanceLogs] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const now = new Date();
+
   const [formData, setFormData] = useState({
     date: formatDate(now),
     time: formatTime(now),
     type: "In",
   });
 
+  
   useEffect(() => {
     const interval = setInterval(() => {
       const currentTime = new Date();
@@ -38,18 +33,28 @@ const UserAttendance = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (attendanceLogs.length > 0) {
-      const lastLog = attendanceLogs[0];
-      const nextType = lastLog.type === "In" ? "Out" : "In";
-      setFormData((prev) => ({
-        ...prev,
-        type: nextType,
-      }));
-    }
-  }, [attendanceLogs]);
+  const fetchAttendanceLogs = async () => {
+    try {
+      const logs = await AttendanceService.getUserAttendance(userData.id);
+      
+      logs.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      setAttendanceLogs(logs);
 
-  const handleAddAttendance = (e) => {
+      
+      if (logs.length > 0) {
+        const nextType = logs[0].type === "In" ? "Out" : "In";
+        setFormData((prev) => ({ ...prev, type: nextType }));
+      }
+    } catch (error) {
+      console.error("Error fetching attendance logs:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAttendanceLogs();
+  }, []);
+
+  const handleAddAttendance = async (e) => {
     e.preventDefault();
 
     if (!formData.date || !formData.time || !formData.type) {
@@ -57,32 +62,32 @@ const UserAttendance = () => {
       return;
     }
 
-    const lastLog = attendanceLogs[0];
-    if (lastLog && lastLog.type === formData.type) {
+    if (
+      attendanceLogs.length > 0 &&
+      attendanceLogs[0].type === formData.type
+    ) {
       alert(`Cannot add two "${formData.type}" logs consecutively!`);
       return;
     }
 
     const now = new Date();
-  const isoDateTime = now.toISOString();
+    const isoDateTime = now.toISOString();
 
-  const attendancePayload = {
-    employeeId: userData.id,        // Assuming userData.id exists
-    type: formData.type,
-    source: "Web",                  // Or any source string you prefer
-    time: `${formData.date}T${formData.time}:00`, // ISO format time
-    date: formData.date,
-    updatedAt: isoDateTime
-  };
-  AttendanceService.addUserAttendance(attendancePayload);
-  console.log(attendancePayload);
-    const newLog = {
-      date: formData.date,
-      time: formData.time,
+    const payload = {
+      employeeId: userData.id,
       type: formData.type,
+      source: "Web",
+      time: `${formData.date}T${formData.time}:00`,
+      date: formData.date,
+      updatedAt: isoDateTime,
     };
 
-    setAttendanceLogs((prevLogs) => [newLog, ...prevLogs]);
+    try {
+      await AttendanceService.addUserAttendance(payload);
+      await fetchAttendanceLogs(); 
+    } catch (error) {
+      console.error("Error adding attendance:", error);
+    }
   };
 
   return (
@@ -90,24 +95,31 @@ const UserAttendance = () => {
       <h2 className="attendance-header">Employee Attendance</h2>
 
       {/* Employee Details */}
-      <div className="attendance-details">
-        <div className="attendance-detail">
-          <label>Employee Name:</label>
-          <span>{userData.name}</span>
-        </div>
-        <div className="attendance-detail">
-          <label>Department:</label>
-          <span>{userData.departmentName}</span>
-        </div>
-        <div className="attendance-detail">
-          <label>Office:</label>
-          <span>{userData.officeName}</span>
-        </div>
-        <div className="attendance-detail">
-          <label>Designation:</label>
-          <span>{userData.designation}</span>
-        </div>
-      </div>
+     <div className="attendance-details">
+  <div className="attendance-row">
+    <div className="attendance-detail">
+      <label>Employee Name: </label>
+      <span>{userData.name}</span>
+    </div>
+    <div className="attendance-detail">
+      <label>Department: </label>
+      <span>{userData.departmentName}</span>
+    </div>
+  </div>
+
+  <div className="attendance-row">
+    <div className="attendance-detail">
+      <label>Office: </label>
+      <span>{userData.officeName}</span>
+    </div>
+    <div className="attendance-detail">
+      <label>Designation: </label>
+      <span>{userData.designation}</span>
+    </div>
+  </div>
+</div>
+
+
 
       {/* Add Attendance Form */}
       <div className="add-attendance-form">
@@ -115,26 +127,47 @@ const UserAttendance = () => {
         <form onSubmit={handleAddAttendance}>
           <input
             type="date"
-            name="date"
             value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, date: e.target.value })
+            }
           />
           <input
             type="time"
-            name="time"
             value={formData.time}
-            onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, time: e.target.value })
+            }
           />
-
           <p className="next-type">
             Next Entry Type: <strong>{formData.type}</strong>
           </p>
-
           <button type="submit">Add Attendance</button>
         </form>
       </div>
 
-      {/* Attendance Logs */}
+      <div className="date-range-filter">
+        <h3>Filter Attendance by Date</h3>
+        <div className="date-picker-group">
+          <div className="date-picker">
+            <label>From Date:</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+          <div className="date-picker">
+            <label>To Date:</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="attendance-logs">
         <h3>Attendance Logs</h3>
         <table>
@@ -149,7 +182,7 @@ const UserAttendance = () => {
             {attendanceLogs.map((log, index) => (
               <tr key={index}>
                 <td>{log.date}</td>
-                <td>{log.time}</td>
+                <td>{log.time?.substring(11, 16) || "N/A"}</td>
                 <td>{log.type}</td>
               </tr>
             ))}

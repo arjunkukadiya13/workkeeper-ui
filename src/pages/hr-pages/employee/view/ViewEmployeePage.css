@@ -1,0 +1,42 @@
+.view-employee-container {
+  padding: 30px;
+}
+
+.back-button {
+  margin-bottom: 20px;
+}
+
+.employee-card {
+  text-align: center;
+  padding: 20px;
+}
+
+.employee-avatar {
+  width: 100px !important;
+  height: 100px !important;
+  margin: 0 auto;
+  font-size: 40px;
+}
+
+.employee-info-section {
+  margin-top: 20px;
+}
+
+.employee-info-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.employee-info-grid {
+  margin-bottom: 20px;
+}
+
+.employee-info-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.employee-info-value {
+  margin-left: 4px;
+  color: #333;
+}
