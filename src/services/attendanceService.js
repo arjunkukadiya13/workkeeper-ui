@@ -6,6 +6,10 @@ class AttendanceService{
         const response = await httpClient.get(`AttendanceLog/employee/${id}`);
         return response.data;
     }
+    static async addUserAttendance(data){
+        const response = await httpClient.post("AttendanceLog",data)
+        return response.data;
+    }
 
 }
 export default AttendanceService;

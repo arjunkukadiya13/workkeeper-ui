@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./UserAttendance.css";
 import { useSelector } from "react-redux";
+import AttendanceService from "../../../services/attendanceService";
 
 const initialAttendanceLogs = [
   { date: "2025-04-07", time: "09:00", type: "In" },
@@ -8,20 +9,15 @@ const initialAttendanceLogs = [
   { date: "2025-04-06", time: "09:15", type: "In" },
 ];
 
-const employeeData = {
-  id: 1023,
-  name: "Arjun Kukadiya",
-  department: { departmentName: "Software Development" },
-  office: { officeName: "Head Office" },
-  designation: "Software Engineer",
-};
 
 const formatDate = (date) => date.toISOString().split("T")[0];
 const formatTime = (date) => date.toTimeString().slice(0, 5);
 
+
 const UserAttendance = () => {
   const userData = useSelector((state) => state.userData); 
   const [attendanceLogs, setAttendanceLogs] = useState(initialAttendanceLogs);
+  const [newAttendance, setNewAttendance] = useState([])
 
   const now = new Date();
   const [formData, setFormData] = useState({
@@ -67,6 +63,19 @@ const UserAttendance = () => {
       return;
     }
 
+    const now = new Date();
+  const isoDateTime = now.toISOString();
+
+  const attendancePayload = {
+    employeeId: userData.id,        // Assuming userData.id exists
+    type: formData.type,
+    source: "Web",                  // Or any source string you prefer
+    time: `${formData.date}T${formData.time}:00`, // ISO format time
+    date: formData.date,
+    updatedAt: isoDateTime
+  };
+  AttendanceService.addUserAttendance(attendancePayload);
+  console.log(attendancePayload);
     const newLog = {
       date: formData.date,
       time: formData.time,
