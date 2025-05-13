@@ -62,6 +62,9 @@ const EmployeeData = () => {
   const handleNavigateToEdit = (employeeId) => {
     navigate(`/hr/employee/edit-employee/${employeeId}`);
   };
+  const handleNavigateToView = (employeeId) => {
+    navigate(`/hr/employee/view-employee/${employeeId}`);
+  };
 
   const handleFilter = () => {
     console.log("Filters applied:", {
@@ -212,6 +215,7 @@ const EmployeeData = () => {
                           fontSize: "12px",
                           cursor: "pointer",
                         }}
+                        onClick={()=>handleNavigateToView(employee.id)}
                       >
                         View
                       </button>
