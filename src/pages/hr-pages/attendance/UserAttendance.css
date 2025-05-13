@@ -129,7 +129,19 @@
   font-size: 18px;
   text-align: center;
 }
+.date-range-filter button {
+  background-color: #1976d2;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
 
+.date-range-filter button:hover{
+    background-color: #1565c0;
+}
 .date-picker-group {
   display: flex;
   gap: 20px;

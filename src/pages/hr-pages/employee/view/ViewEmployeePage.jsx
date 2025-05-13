@@ -161,20 +161,6 @@ const ViewEmployeePage = () => {
       </CardContent>
     </Card>
   </Grid>
-
-  {/* Performance Summary */}
-  <Grid item xs={12} sm={4}>
-    <Card className="info-card">
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Performance
-        </Typography>
-        <Typography variant="body2">Last Review Score: 4.2/5</Typography>
-        <Typography variant="body2">Reviewer: Mr. A. Sharma</Typography>
-        <Typography variant="body2">Review Date: 2025-03-10</Typography>
-      </CardContent>
-    </Card>
-  </Grid>
 </Grid>
 
         </Grid>
