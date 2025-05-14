@@ -1,0 +1,24 @@
+.employee-leave-container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.leave-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.leave-history-table th,
+.leave-history-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.leave-history-table th {
+  background-color: #f4f4f4;
+}
