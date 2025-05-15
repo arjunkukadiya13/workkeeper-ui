@@ -9,5 +9,9 @@ class LeaveService{
         const response = await httpClient.get(`/Leave/${id}`);
         return response.data;
     }
+    static async addNewLeave(data){
+        const response = await httpClient.post("/Leave",data)
+        return response.data
+    }
 }
 export default LeaveService;

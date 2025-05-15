@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import LeaveService from "../../../services/leaveService";
 import EmployeeService from "../../../services/employeeService";
+import { useSelector } from "react-redux";
 
 const EmployeeLeaveContent = () => {
   const [leaveType, setLeaveType] = useState("");
@@ -21,6 +22,7 @@ const EmployeeLeaveContent = () => {
 
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [ccOptions, setCcOptions] = useState([]);
+  const userData = useSelector((state) => state.userData);
 
   const [leaveBalance, setLeaveBalance] = useState({
     "Privilege Leave": 10,
@@ -59,7 +61,24 @@ const EmployeeLeaveContent = () => {
     },
   ]);
 
-  const handleApply = () => {
+
+  const handleApply = async () => {
+    const selectedLeaveType = leaveTypes.find((lt) => lt.leaveName === leaveType);
+    const selectedApprover = ccOptions.find((emp) => emp.organizationEmail === ccTo);
+
+    const payload = {
+      employeeId: userData.id,
+      leaveTypeId: selectedLeaveType?.id || 0,
+      note: note || "",
+      approverId: selectedApprover?.id || 0,
+      startDate: new Date(fromDate).toISOString(),
+      endDate: new Date(toDate).toISOString(),
+      status: "Pending",
+      createdAt: new Date().toISOString(),
+    };
+
+    await LeaveService.addNewLeave(payload)
+
     const newLeave = {
       id: leaveHistory.length + 1,
       leaveType,
@@ -67,12 +86,13 @@ const EmployeeLeaveContent = () => {
       toDate,
       status: "Pending",
       note,
-      ccTo
+      ccTo,
     };
 
     setLeaveHistory([newLeave, ...leaveHistory]);
     alert("Leave applied successfully (static mode)");
 
+    // Clear form
     setLeaveType("");
     setFromDate("");
     setToDate("");
@@ -87,16 +107,22 @@ const EmployeeLeaveContent = () => {
   };
 
   const fetchHRDetails = async () => {
+    try {
       const ccList = await EmployeeService.getEmployeeByRole("HR Manager");
+      console.log("HR Managers:", ccList);
       setCcOptions(ccList);
-  }
+    } catch (error) {
+      console.error("Error fetching HR managers:", error);
+    }
+  };
+
   const fetchLeaveTypes = async () => {
     try {
       const types = await LeaveService.getLeaveTypes();
+      console.log("Leave Types:", types);
       setLeaveTypes(types);
-      
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching leave types:", error);
     }
   };
 
@@ -107,7 +133,9 @@ const EmployeeLeaveContent = () => {
 
   return (
     <div className="employee-leave-container">
-      <Typography variant="h5" gutterBottom>Apply for Leave</Typography>
+      <Typography variant="h5" gutterBottom>
+        Apply for Leave
+      </Typography>
 
       <FormControl fullWidth margin="normal">
         <InputLabel>Leave Type</InputLabel>
@@ -145,9 +173,8 @@ const EmployeeLeaveContent = () => {
         inputProps={{
           min: fromDate || "",
         }}
-        disabled={!fromDate} 
+        disabled={!fromDate}
       />
-
 
       <TextField
         fullWidth
@@ -157,7 +184,6 @@ const EmployeeLeaveContent = () => {
         margin="normal"
       />
 
-      {/* CC To Dropdown */}
       <FormControl fullWidth margin="normal">
         <InputLabel>CC To (Email)</InputLabel>
         <Select
@@ -177,14 +203,20 @@ const EmployeeLeaveContent = () => {
         Apply Leave
       </Button>
 
-      <Typography variant="h6" sx={{ marginTop: 4 }}>Leave Balance</Typography>
+      <Typography variant="h6" sx={{ marginTop: 4 }}>
+        Leave Balance
+      </Typography>
       <ul>
         {Object.entries(leaveBalance).map(([type, days]) => (
-          <li key={type}>{type}: {days} days</li>
+          <li key={type}>
+            {type}: {days} days
+          </li>
         ))}
       </ul>
 
-      <Typography variant="h6" sx={{ marginTop: 4 }}>Leave History</Typography>
+      <Typography variant="h6" sx={{ marginTop: 4 }}>
+        Leave History
+      </Typography>
       <table className="leave-history-table">
         <thead>
           <tr>
@@ -208,7 +240,9 @@ const EmployeeLeaveContent = () => {
               <td>{leave.ccTo || "-"}</td>
               <td>
                 {leave.status === "Pending" && (
-                  <Button color="error" onClick={() => handleWithdraw(leave.id)}>Withdraw</Button>
+                  <Button color="error" onClick={() => handleWithdraw(leave.id)}>
+                    Withdraw
+                  </Button>
                 )}
               </td>
             </tr>
