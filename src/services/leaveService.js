@@ -5,5 +5,9 @@ class LeaveService{
         const response = await httpClient.get("/LeaveType");
         return response.data;
     }
+    static async getEmployeeLeaveById(id){
+        const response = await httpClient.get(`/Leave/${id}`);
+        return response.data;
+    }
 }
 export default LeaveService;

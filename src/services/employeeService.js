@@ -55,35 +55,19 @@ class EmployeeService{
       throw error;
     }
   }
+
+  static async getEmployeeByRole(role){
+    try{
+        const response = await httpClient.get(`/Employee/by-role`, {
+      params: { roleName:role }
+    });
+        return response.data;
+    }catch(error){
+      throw error
+    }
+  }
 }
 
-const employeeService = {
-  getEmployee: async () => {
-    try {
-      const response = await httpClient.get("/Employee", {  });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
-  getEmployeeById: async (id)=> {
-    try{
-    const response = await httpClient.get(`/Employee/${id}`);
-    return response.data;
-
-  }catch(error){
-    throw error;
-  }
-},
-  updateEmployee: async (data,id) => {
-    try{
-      const response = await httpClient.put(`/Employee/${id}`,data);
-      return response.data;
-    }catch (error){
-      throw error;
-    }
-  }
-};
 
 export default EmployeeService;
 

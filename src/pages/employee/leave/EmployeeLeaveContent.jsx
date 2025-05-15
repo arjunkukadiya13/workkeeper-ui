@@ -10,6 +10,7 @@ import {
   FormControl,
 } from "@mui/material";
 import LeaveService from "../../../services/leaveService";
+import EmployeeService from "../../../services/employeeService";
 
 const EmployeeLeaveContent = () => {
   const [leaveType, setLeaveType] = useState("");
@@ -19,6 +20,7 @@ const EmployeeLeaveContent = () => {
   const [ccTo, setCcTo] = useState("");
 
   const [leaveTypes, setLeaveTypes] = useState([]);
+  const [ccOptions, setCcOptions] = useState([]);
 
   const [leaveBalance, setLeaveBalance] = useState({
     "Privilege Leave": 10,
@@ -65,6 +67,7 @@ const EmployeeLeaveContent = () => {
       toDate,
       status: "Pending",
       note,
+      ccTo
     };
 
     setLeaveHistory([newLeave, ...leaveHistory]);
@@ -83,14 +86,23 @@ const EmployeeLeaveContent = () => {
     alert("Leave withdrawn (static mode)");
   };
 
+  const fetchHRDetails = async () => {
+      const ccList = await EmployeeService.getEmployeeByRole("HR Manager");
+      setCcOptions(ccList);
+  }
   const fetchLeaveTypes = async () => {
-
-      setLeaveTypes(await LeaveService.getLeaveTypes());
-   
+    try {
+      const types = await LeaveService.getLeaveTypes();
+      setLeaveTypes(types);
+      
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   useEffect(() => {
     fetchLeaveTypes();
+    fetchHRDetails();
   }, []);
 
   return (
@@ -130,7 +142,12 @@ const EmployeeLeaveContent = () => {
         value={toDate}
         onChange={(e) => setToDate(e.target.value)}
         margin="normal"
+        inputProps={{
+          min: fromDate || "",
+        }}
+        disabled={!fromDate} 
       />
+
 
       <TextField
         fullWidth
@@ -140,13 +157,21 @@ const EmployeeLeaveContent = () => {
         margin="normal"
       />
 
-      <TextField
-        fullWidth
-        label="CC To (Email)"
-        value={ccTo}
-        onChange={(e) => setCcTo(e.target.value)}
-        margin="normal"
-      />
+      {/* CC To Dropdown */}
+      <FormControl fullWidth margin="normal">
+        <InputLabel>CC To (Email)</InputLabel>
+        <Select
+          value={ccTo}
+          onChange={(e) => setCcTo(e.target.value)}
+          label="CC To (Email)"
+        >
+          {ccOptions.map((emp) => (
+            <MenuItem key={emp.id} value={emp.organizationEmail}>
+              {emp.name} ({emp.organizationEmail})
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
       <Button variant="contained" color="primary" onClick={handleApply}>
         Apply Leave
@@ -168,6 +193,7 @@ const EmployeeLeaveContent = () => {
             <th>To</th>
             <th>Status</th>
             <th>Note</th>
+            <th>CC To</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -179,6 +205,7 @@ const EmployeeLeaveContent = () => {
               <td>{leave.toDate}</td>
               <td>{leave.status}</td>
               <td>{leave.note}</td>
+              <td>{leave.ccTo || "-"}</td>
               <td>
                 {leave.status === "Pending" && (
                   <Button color="error" onClick={() => handleWithdraw(leave.id)}>Withdraw</Button>
