@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./EmployeeLeaveContent.css";
 import {
   TextField,
@@ -9,16 +9,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-
-const leaveTypes = [
-  "Privilege Leave",
-  "Optional Leave",
-  "Paternity Leave",
-  "Maternity Leave",
-  "Bereavement Leave",
-  "Compensation Leave",
-  "Loss of Pay",
-];
+import LeaveService from "../../../services/leaveService";
 
 const EmployeeLeaveContent = () => {
   const [leaveType, setLeaveType] = useState("");
@@ -26,6 +17,8 @@ const EmployeeLeaveContent = () => {
   const [toDate, setToDate] = useState("");
   const [note, setNote] = useState("");
   const [ccTo, setCcTo] = useState("");
+
+  const [leaveTypes, setLeaveTypes] = useState([]);
 
   const [leaveBalance, setLeaveBalance] = useState({
     "Privilege Leave": 10,
@@ -76,7 +69,7 @@ const EmployeeLeaveContent = () => {
 
     setLeaveHistory([newLeave, ...leaveHistory]);
     alert("Leave applied successfully (static mode)");
-    // Reset form
+
     setLeaveType("");
     setFromDate("");
     setToDate("");
@@ -90,15 +83,31 @@ const EmployeeLeaveContent = () => {
     alert("Leave withdrawn (static mode)");
   };
 
+  const fetchLeaveTypes = async () => {
+
+      setLeaveTypes(await LeaveService.getLeaveTypes());
+   
+  };
+
+  useEffect(() => {
+    fetchLeaveTypes();
+  }, []);
+
   return (
     <div className="employee-leave-container">
       <Typography variant="h5" gutterBottom>Apply for Leave</Typography>
 
       <FormControl fullWidth margin="normal">
         <InputLabel>Leave Type</InputLabel>
-        <Select value={leaveType} onChange={(e) => setLeaveType(e.target.value)} label="Leave Type">
+        <Select
+          value={leaveType}
+          onChange={(e) => setLeaveType(e.target.value)}
+          label="Leave Type"
+        >
           {leaveTypes.map((type) => (
-            <MenuItem key={type} value={type}>{type}</MenuItem>
+            <MenuItem key={type.id} value={type.leaveName}>
+              {type.leaveName}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>

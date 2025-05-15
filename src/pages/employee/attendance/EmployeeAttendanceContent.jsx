@@ -20,7 +20,6 @@ const EmployeeAttendanceContent = () => {
     type: "In",
   });
 
-  
   useEffect(() => {
     const interval = setInterval(() => {
       const currentTime = new Date();
@@ -38,28 +37,16 @@ const EmployeeAttendanceContent = () => {
       const logs = await AttendanceService.getUserAttendance(userData.id);
       logs.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
       setAttendanceLogs(logs);
-
-      
-      if (logs.length > 0) {
-        const nextType = logs[0].type === "In" ? "Out" : "In";
-        setFormData((prev) => ({ ...prev, type: nextType }));
-      }
     } catch (error) {
       console.error("Error fetching attendance logs:", error);
     }
   };
 
-  const fetchFilteredLogs = async (startDate,endDate) => {
+  const fetchFilteredLogs = async (startDate, endDate) => {
     try {
-      const logs = await AttendanceService.getLogsBetweenDates(userData.id,startDate,endDate);
+      const logs = await AttendanceService.getLogsBetweenDates(userData.id, startDate, endDate);
       logs.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
       setAttendanceLogs(logs);
-
-      
-      if (logs.length > 0) {
-        const nextType = logs[0].type === "In" ? "Out" : "In";
-        setFormData((prev) => ({ ...prev, type: nextType }));
-      }
     } catch (error) {
       console.error("Error fetching attendance logs:", error);
     }
@@ -70,20 +57,20 @@ const EmployeeAttendanceContent = () => {
   }, []);
 
   const handleDateFilter = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!startDate || !endDate) {
-    alert("Please select both start and end dates!");
-    return;
-  }
+    if (!startDate || !endDate) {
+      alert("Please select both start and end dates!");
+      return;
+    }
 
-  if (new Date(startDate) > new Date(endDate)) {
-    alert("Start date cannot be after end date.");
-    return;
-  }
+    if (new Date(startDate) > new Date(endDate)) {
+      alert("Start date cannot be after end date.");
+      return;
+    }
 
-  await fetchFilteredLogs(startDate, endDate);
-};
+    await fetchFilteredLogs(startDate, endDate);
+  };
 
   const handleAddAttendance = async (e) => {
     e.preventDefault();
@@ -115,7 +102,7 @@ const EmployeeAttendanceContent = () => {
 
     try {
       await AttendanceService.addUserAttendance(payload);
-      await fetchAttendanceLogs(); 
+      await fetchAttendanceLogs();
     } catch (error) {
       console.error("Error adding attendance:", error);
     }
@@ -126,31 +113,29 @@ const EmployeeAttendanceContent = () => {
       <h2 className="attendance-header">Employee Attendance</h2>
 
       {/* Employee Details */}
-     <div className="attendance-details">
-  <div className="attendance-row">
-    <div className="attendance-detail">
-      <label>Employee Name: </label>
-      <span>{userData.name}</span>
-    </div>
-    <div className="attendance-detail">
-      <label>Department: </label>
-      <span>{userData.departmentName}</span>
-    </div>
-  </div>
+      <div className="attendance-details">
+        <div className="attendance-row">
+          <div className="attendance-detail">
+            <label>Employee Name: </label>
+            <span>{userData.name}</span>
+          </div>
+          <div className="attendance-detail">
+            <label>Department: </label>
+            <span>{userData.departmentName}</span>
+          </div>
+        </div>
 
-  <div className="attendance-row">
-    <div className="attendance-detail">
-      <label>Office: </label>
-      <span>{userData.officeName}</span>
-    </div>
-    <div className="attendance-detail">
-      <label>Designation: </label>
-      <span>{userData.designation}</span>
-    </div>
-  </div>
-</div>
-
-
+        <div className="attendance-row">
+          <div className="attendance-detail">
+            <label>Office: </label>
+            <span>{userData.officeName}</span>
+          </div>
+          <div className="attendance-detail">
+            <label>Designation: </label>
+            <span>{userData.designation}</span>
+          </div>
+        </div>
+      </div>
 
       {/* Add Attendance Form */}
       <div className="add-attendance-form">
@@ -170,39 +155,61 @@ const EmployeeAttendanceContent = () => {
               setFormData({ ...formData, time: e.target.value })
             }
           />
-          <p className="next-type">
-            Next Entry Type: <strong>{formData.type}</strong>
-          </p>
+
+          <div className="attendance-type-checkboxes">
+            <label>
+              <input
+                type="checkbox"
+                checked={formData.type === "In"}
+                onChange={() =>
+                  setFormData((prev) => ({ ...prev, type: "In" }))
+                }
+              />
+              In
+            </label>
+            <label style={{ marginLeft: "1rem" }}>
+              <input
+                type="checkbox"
+                checked={formData.type === "Out"}
+                onChange={() =>
+                  setFormData((prev) => ({ ...prev, type: "Out" }))
+                }
+              />
+              Out
+            </label>
+          </div>
+
           <button type="submit">Add Attendance</button>
         </form>
       </div>
 
+      {/* Filter Logs by Date */}
       <div className="date-range-filter">
-  <h3>Filter Attendance by Date</h3>
-  <form onSubmit={handleDateFilter}>
-    <div className="date-picker-group">
-      <div className="date-picker">
-        <label>From Date:</label>
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
+        <h3>Filter Attendance by Date</h3>
+        <form onSubmit={handleDateFilter}>
+          <div className="date-picker-group">
+            <div className="date-picker">
+              <label>From Date:</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+            <div className="date-picker">
+              <label>To Date:</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+          </div>
+          <button type="submit">Filter Logs</button>
+        </form>
       </div>
-      <div className="date-picker">
-        <label>To Date:</label>
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-      </div>
-    </div>
-    <button type="submit">Filter Logs</button>
-  </form>
-</div>
 
-
+      {/* Attendance Logs Table */}
       <div className="attendance-logs">
         <h3>Attendance Logs</h3>
         <table>
