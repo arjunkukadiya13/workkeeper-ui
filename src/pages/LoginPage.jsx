@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Button, Card, Typography, InputAdornment, IconButton } from "@mui/material";
+import { TextField, Button, Card, Typography, InputAdornment, IconButton,CircularProgress  } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
@@ -14,26 +14,29 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const handleLogin = async () => {
     if (!email || !password) {
       setError("Please enter both email and password.");
       return;
     }
+    setLoading(true);
       const data = await AuthService.login(email, password);
       dispatch(userLogin());
       localStorage.setItem("authToken", data.token);
       dispatch(setUserData(await EmployeeService.getEmployeeByEmail(email)))
       const roleName = data.user.role.roleName.toLowerCase();
+      setLoading(false); 
       if(roleName=="hr manager"){
         navigate("/hr/dashboard");
       }else if(roleName=="employee"){
         navigate("/employee/dashboard");
 
       }
-      
-    
+  
   };
 
   const handleTogglePassword = () => {
@@ -81,6 +84,8 @@ const LoginPage = () => {
           fullWidth 
           className="login-button"
           onClick={handleLogin}
+          disabled={loading} 
+          startIcon={loading && <CircularProgress size={20} />}
         >
           Login
         </Button>

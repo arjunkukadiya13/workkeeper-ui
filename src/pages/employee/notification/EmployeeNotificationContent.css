@@ -1,0 +1,43 @@
+.employee-notification-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.employee-notification-container h5 {
+  font-weight: 600;
+  color: #333333;
+}
+
+.employee-notification-container .MuiFormControl-root {
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+
+.employee-notification-container .MuiListItem-root {
+  transition: background-color 0.3s ease;
+}
+
+.employee-notification-container .MuiListItem-root:hover {
+  background-color: #f0f8ff;
+}
+
+.employee-notification-container .MuiChip-root {
+  margin-left: 15px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  height: 24px;
+  border-radius: 8px;
+}
+
+.employee-notification-container .MuiIconButton-root {
+  margin-left: 10px;
+}
+
+.employee-notification-container .MuiTypography-root {
+  color: #555;
+}
