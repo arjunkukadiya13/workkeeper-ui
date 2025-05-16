@@ -22,6 +22,8 @@ const EmployeeLeaveContent = () => {
 
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [ccOptions, setCcOptions] = useState([]);
+  const [leaveHistory, setLeaveHistory] = useState([]);
+
   const userData = useSelector((state) => state.userData);
 
   const [leaveBalance, setLeaveBalance] = useState({
@@ -33,34 +35,6 @@ const EmployeeLeaveContent = () => {
     "Compensation Leave": 2,
     "Loss of Pay": 0,
   });
-
-  const [leaveHistory, setLeaveHistory] = useState([
-    {
-      id: 1,
-      leaveType: "Privilege Leave",
-      fromDate: "2025-05-01",
-      toDate: "2025-05-03",
-      status: "Approved",
-      note: "Personal work",
-    },
-    {
-      id: 2,
-      leaveType: "Optional Leave",
-      fromDate: "2025-04-14",
-      toDate: "2025-04-14",
-      status: "Pending",
-      note: "Festival",
-    },
-    {
-      id: 3,
-      leaveType: "Compensation Leave",
-      fromDate: "2025-03-25",
-      toDate: "2025-03-25",
-      status: "Rejected",
-      note: "Comp for weekend work",
-    },
-  ]);
-
 
   const handleApply = async () => {
     const selectedLeaveType = leaveTypes.find((lt) => lt.leaveName === leaveType);
@@ -77,58 +51,80 @@ const EmployeeLeaveContent = () => {
       createdAt: new Date().toISOString(),
     };
 
-    await LeaveService.addNewLeave(payload)
+    try {
+      await LeaveService.addNewLeave(payload);
+      alert("Leave applied successfully");
 
-    const newLeave = {
-      id: leaveHistory.length + 1,
-      leaveType,
-      fromDate,
-      toDate,
-      status: "Pending",
-      note,
-      ccTo,
-    };
+      fetchLeaves();
 
-    setLeaveHistory([newLeave, ...leaveHistory]);
-    alert("Leave applied successfully (static mode)");
-
-    // Clear form
-    setLeaveType("");
-    setFromDate("");
-    setToDate("");
-    setNote("");
-    setCcTo("");
+      setLeaveType("");
+      setFromDate("");
+      setToDate("");
+      setNote("");
+      setCcTo("");
+    } catch (error) {
+      console.error("Failed to apply leave:", error);
+    }
   };
 
-  const handleWithdraw = (id) => {
+  const handleWithdraw = async (id) => {
+
     const updated = leaveHistory.filter((leave) => leave.id !== id);
     setLeaveHistory(updated);
-    alert("Leave withdrawn (static mode)");
-  };
-
-  const fetchHRDetails = async () => {
-    try {
-      const ccList = await EmployeeService.getEmployeeByRole("HR Manager");
-      console.log("HR Managers:", ccList);
-      setCcOptions(ccList);
-    } catch (error) {
-      console.error("Error fetching HR managers:", error);
-    }
+    alert("Leave withdrawn successfully");
   };
 
   const fetchLeaveTypes = async () => {
     try {
       const types = await LeaveService.getLeaveTypes();
-      console.log("Leave Types:", types);
       setLeaveTypes(types);
     } catch (error) {
       console.error("Error fetching leave types:", error);
     }
   };
 
+  const fetchHRDetails = async () => {
+    try {
+      const ccList = await EmployeeService.getEmployeeByRole("HR Manager");
+      setCcOptions(ccList);
+    } catch (error) {
+      console.error("Error fetching HR managers:", error);
+    }
+  };
+
+  const fetchLeaves = async () => {
+    try {
+      const leavesData = await LeaveService.getEmployeeLeaveById(userData.id);
+
+      const mappedLeaves = leavesData.map((leave, index) => {
+        const leaveTypeName = leaveTypes.find((lt) => lt.id === leave.leaveTypeId)?.leaveName || "Unknown";
+        const ccToEmail = ccOptions.find((emp) => emp.id === leave.approverId)?.organizationEmail || "";
+
+        return {
+          id: leave.id || index + 1,
+          leaveType: leaveTypeName,
+          fromDate: leave.startDate.split("T")[0],
+          toDate: leave.endDate.split("T")[0],
+          status: leave.status,
+          note: leave.note,
+          ccTo: ccToEmail,
+        };
+      });
+
+      setLeaveHistory(mappedLeaves);
+    } catch (error) {
+      console.error("Error fetching employee leaves:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchLeaveTypes();
-    fetchHRDetails();
+    const loadData = async () => {
+      await fetchLeaveTypes();
+      await fetchHRDetails();
+      await fetchLeaves();
+    };
+
+    loadData();
   }, []);
 
   return (
