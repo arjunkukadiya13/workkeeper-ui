@@ -1,0 +1,14 @@
+.leave-balance-widget {
+  margin-top: 32px; 
+}
+
+.leave-balance-widget ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.leave-balance-widget li {
+  padding: 6px 0;
+  border-bottom: 1px solid #ddd;
+}

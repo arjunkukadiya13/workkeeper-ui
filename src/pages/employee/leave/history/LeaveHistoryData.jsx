@@ -1,12 +1,7 @@
-const LeaveHistoryData = ({
-  leaveTypes,
-  ccOptions,
-  leaveHistory,
-  setLeaveHistory,
-  fetchLeaves,
-  handleWithdraw,
-}) => {
+import { Button, Typography } from "@mui/material";
+import "./LeaveHistoryData.css"
 
+const LeaveHistoryData = ({ leaveHistory, handleWithdraw }) => {
   return (
     <div>
       <Typography variant="h6" sx={{ marginTop: 4 }}>
@@ -47,3 +42,5 @@ const LeaveHistoryData = ({
     </div>
   );
 };
+
+export default LeaveHistoryData;

@@ -2,6 +2,7 @@ import React, {  useState } from "react";
 import {
   Typography,
 } from "@mui/material";
+import "./LeaveBalanceWidget.css"
 
 const LeaveBalanceWidget = () => {
     const [leaveBalance, setLeaveBalance] = useState({
