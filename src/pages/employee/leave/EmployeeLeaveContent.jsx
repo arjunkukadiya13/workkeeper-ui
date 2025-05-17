@@ -12,6 +12,7 @@ import {
 import LeaveService from "../../../services/leaveService";
 import EmployeeService from "../../../services/employeeService";
 import { useSelector } from "react-redux";
+import LeaveBalanceWidget from "./balance/LeaveBalanceWidget";
 
 const EmployeeLeaveContent = () => {
   const [leaveType, setLeaveType] = useState("");
@@ -26,15 +27,6 @@ const EmployeeLeaveContent = () => {
 
   const userData = useSelector((state) => state.userData);
 
-  const [leaveBalance, setLeaveBalance] = useState({
-    "Privilege Leave": 10,
-    "Optional Leave": 1,
-    "Paternity Leave": 3,
-    "Maternity Leave": 180,
-    "Bereavement Leave": 3,
-    "Compensation Leave": 2,
-    "Loss of Pay": 0,
-  });
 
   const handleApply = async () => {
     const selectedLeaveType = leaveTypes.find((lt) => lt.leaveName === leaveType);
@@ -199,16 +191,7 @@ const EmployeeLeaveContent = () => {
         Apply Leave
       </Button>
 
-      <Typography variant="h6" sx={{ marginTop: 4 }}>
-        Leave Balance
-      </Typography>
-      <ul>
-        {Object.entries(leaveBalance).map(([type, days]) => (
-          <li key={type}>
-            {type}: {days} days
-          </li>
-        ))}
-      </ul>
+      <LeaveBalanceWidget/>
 
       <Typography variant="h6" sx={{ marginTop: 4 }}>
         Leave History
