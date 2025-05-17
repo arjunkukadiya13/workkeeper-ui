@@ -5,6 +5,7 @@ const Dashboard = lazy(() => import("./pages/hr-pages/HRDashboard"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const AttendancePage = lazy(() => import("./pages/hr-pages/AttendancePage"));
 const Employee = lazy(() => import("./pages/hr-pages/Employee"));
+const LeaveManagementPage = lazy(() => import("./pages/hr-pages/LeaveManagementPage"));
 const AddEmployee = lazy(() => import("./pages/hr-pages/employee/AddEmployee"));
 const EditEmployee = lazy(() => import("./pages/hr-pages/employee/EditEmployee"));
 const ViewEmployee = lazy(() => import("./pages/hr-pages/employee/ViewEmployee"));
@@ -30,6 +31,7 @@ const AppRoutes = () => {
         <Route path="/hr/dashboard" element={<AuthContext><Dashboard /></AuthContext>} />
         <Route path="/hr/attendance" element={<AuthContext><AttendancePage /></AuthContext>} />
         <Route path="/hr/employee" element={<AuthContext><Employee /></AuthContext>} />
+        <Route path="/hr/leave-management" element={<AuthContext><LeaveManagementPage /></AuthContext>} />
         <Route path="/hr/settings" element={<AuthContext><SettingPage /></AuthContext>} />
         <Route path="/hr/employee/add-employee" element={<AuthContext><AddEmployee /></AuthContext>} />
         <Route path="/hr/employee/edit-employee/:id" element={<AuthContext><EditEmployee /></AuthContext>} />

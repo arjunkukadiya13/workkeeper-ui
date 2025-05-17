@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { FaTachometerAlt, FaCalendarCheck, FaUsers, FaChartBar, FaCog } from "react-icons/fa";
+import { FaTachometerAlt, FaCalendarCheck, FaUsers, FaChartBar, FaCog,FaCalendarAlt } from "react-icons/fa";
 import "./SideBar.css"
 
 const HRSideBar = () => {
@@ -16,6 +16,9 @@ const HRSideBar = () => {
     </NavLink>
     <NavLink to="/hr/employee" >
       <FaUsers /> Employees
+    </NavLink>
+    <NavLink to="/hr/leave-management" >
+      <FaCalendarAlt  /> Leave Management
     </NavLink>
     <NavLink to="/hr/reports" >
       <FaChartBar /> Reports
