@@ -12,7 +12,7 @@ class AttendanceService{
     }
     static async getLogsBetweenDates(id, startDate, endDate) {
     const response = await httpClient.get(
-        `AttendanceLog/between-dates-by-employee?employeeId=${id}&startDate=${startDate}&endDate=${endDate}`
+        `AttendanceLog/between-dates?employeeId=${id}&startDate=${startDate}&endDate=${endDate}`
     );
     return response.data;
 }

@@ -1,122 +1,20 @@
 .attendance-container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    border: 2px solid rgb(41, 37, 37);
-  }
-  
-  .attendance-header {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .attendance-details {
-    display: flex;
-    flex-direction: column;
-    /* gap: 10px; */
-  }
-  
-  .attendance-detail {
-    display: flex;
-    /* justify-content: space-between; */
-    padding: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-  
-  .attendance-detail label {
-    font-weight: bold;
-  }
-  
-  .attendance-logs {
-    margin-top: 20px;
-  }
-  
-  .attendance-logs table {
-    width: 100%;
-    border-collapse: collapse;
-    border: solid 3px;
-  }
-  
-  .attendance-logs th, .attendance-logs td {
-    border: 2px solid rgba(18, 17, 17, 0.2);
-    padding: 8px;
-    text-align: center;
-  }
-  
-  .attendance-logs th {
-    background-color: rgba(255, 255, 255, 0.2);
-    font-weight: bold;
-  }
-  
-  .add-attendance-form {
-    margin: 20px 0;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-  }
-  
-  .add-attendance-form form {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  .add-attendance-form input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .add-attendance-form button {
-    background-color: #1976d2;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .add-attendance-form button:hover {
-    background-color: #1565c0;
-  }
-  
-.attendance-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 40px;
-  margin-bottom: 10px;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 2px solid rgb(41, 37, 37);
 }
 
-.attendance-detail {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-.attendance-detail label {
+.attendance-header {
+  text-align: center;
+  font-size: 24px;
   font-weight: bold;
-  white-space: nowrap;
+  margin-bottom: 20px;
 }
 
-.attendance-detail span {
-  white-space: nowrap;
-}
-
-
-  .date-range-filter {
+.date-range-filter {
   margin: 20px 0;
   padding: 15px;
   border: 1px solid #ccc;
@@ -129,19 +27,21 @@
   font-size: 18px;
   text-align: center;
 }
+
 .date-range-filter button {
   background-color: #1976d2;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.date-range-filter button:hover{
-    background-color: #1565c0;
+.date-range-filter button:hover {
+  background-color: #1565c0;
 }
+
 .date-picker-group {
   display: flex;
   gap: 20px;
@@ -165,9 +65,30 @@
   border-radius: 6px;
   border: 1px solid #ccc;
 }
-.info-card {
-  min-height: 150px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+
+.attendance-logs {
+  margin-top: 20px;
+}
+
+.attendance-logs h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.attendance-logs table {
+  width: 100%;
+  border-collapse: collapse;
+  border: solid 3px;
+}
+
+.attendance-logs th,
+.attendance-logs td {
+  border: 2px solid rgba(18, 17, 17, 0.2);
+  padding: 8px;
+  text-align: center;
+}
+
+.attendance-logs th {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: bold;
 }

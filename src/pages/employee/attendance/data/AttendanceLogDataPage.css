@@ -1,0 +1,28 @@
+.attendance-logs {
+  margin-top: 20px;
+}
+
+.attendance-logs h3 {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.attendance-logs table {
+  width: 100%;
+  border-collapse: collapse;
+  border: solid 3px;
+}
+
+.attendance-logs th,
+.attendance-logs td {
+  border: 2px solid rgba(18, 17, 17, 0.2);
+  padding: 8px;
+  text-align: center;
+}
+
+.attendance-logs th {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: bold;
+}
