@@ -15,6 +15,8 @@ const EmployeeAttendanceContent = () => {
   const [attendanceLogs, setAttendanceLogs] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [editingLog, setEditingLog] = useState(null);
+
 
   const fetchAttendanceLogs = async () => {
     try {
@@ -54,7 +56,10 @@ const EmployeeAttendanceContent = () => {
       />
 
       {/* Attendance Logs Table */}
-      <AttendanceLogDataPage attendanceLogs={attendanceLogs} />
+      <AttendanceLogDataPage
+        attendanceLogs={attendanceLogs}
+        onEdit={setEditingLog}
+      />
     </div>
   );
 };
