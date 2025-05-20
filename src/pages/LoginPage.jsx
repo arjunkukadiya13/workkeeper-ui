@@ -84,8 +84,6 @@ const LoginPage = () => {
           fullWidth 
           className="login-button"
           onClick={handleLogin}
-          disabled={loading} 
-          startIcon={loading && <CircularProgress size={20} />}
         >
           Login
         </Button>

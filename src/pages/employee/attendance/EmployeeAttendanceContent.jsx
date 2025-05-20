@@ -1,11 +1,12 @@
-import React, { useState, useEffect, lazy } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import "./EmployeeAttendanceContent.css";
 import { useSelector } from "react-redux";
 import AttendanceService from "../../../services/attendanceService";
-import AddAttendanceForm from "./add/AddAttendanceForm";
-import AttendanceLogDataPage from "./data/AttendanceLogDataPage";
-import FilterAttendanceLogs from "./filter/FilterAttendanceLogs";
 
+const AddAttendanceForm = lazy(() => import("./add/AddAttendanceForm"));
+const AttendanceLogDataPage = lazy(() => import("./data/AttendanceLogDataPage"));
+const FilterAttendanceLogs = lazy(() => import("./filter/FilterAttendanceLogs"));
+const EditAttendanceModal = lazy(() => import("./edit/EditAttendanceModal"));
 const EmployeeInformationWidget = lazy(() =>
   import("../../../components/employee-components/EmployeeInformationWidget")
 );
@@ -16,7 +17,6 @@ const EmployeeAttendanceContent = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [editingLog, setEditingLog] = useState(null);
-
 
   const fetchAttendanceLogs = async () => {
     try {
@@ -37,29 +37,47 @@ const EmployeeAttendanceContent = () => {
       <h2 className="attendance-header">Employee Attendance</h2>
 
       {/* Employee Details */}
-      <EmployeeInformationWidget />
+      <Suspense fallback={<div>Loading Employee Info...</div>}>
+        <EmployeeInformationWidget />
+      </Suspense>
 
       {/* Add Attendance Form */}
-      <AddAttendanceForm
-        attendanceLogs={attendanceLogs}
-        refreshAttendanceLogs={fetchAttendanceLogs}
-      />
+      <Suspense fallback={<div>Loading Add Form...</div>}>
+        <AddAttendanceForm
+          attendanceLogs={attendanceLogs}
+          refreshAttendanceLogs={fetchAttendanceLogs}
+        />
+      </Suspense>
 
       {/* Filter Logs by Date */}
-      <FilterAttendanceLogs
-        userId={userData.id}
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-        setAttendanceLogs={setAttendanceLogs}
-      />
+      <Suspense fallback={<div>Loading Filters...</div>}>
+        <FilterAttendanceLogs
+          userId={userData.id}
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          setAttendanceLogs={setAttendanceLogs}
+        />
+      </Suspense>
 
       {/* Attendance Logs Table */}
-      <AttendanceLogDataPage
-        attendanceLogs={attendanceLogs}
-        onEdit={setEditingLog}
-      />
+      <Suspense fallback={<div>Loading Attendance Logs...</div>}>
+        <AttendanceLogDataPage
+          attendanceLogs={attendanceLogs}
+          onEdit={setEditingLog}
+        />
+      </Suspense>
+
+      {/* Edit Modal */}
+      <Suspense fallback={null}>
+        {editingLog && (
+          <EditAttendanceModal
+            log={editingLog}
+            onClose={() => setEditingLog(null)}
+          />
+        )}
+      </Suspense>
     </div>
   );
 };

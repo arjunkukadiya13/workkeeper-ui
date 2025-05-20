@@ -43,7 +43,6 @@ const EmployeeDashboardContent = () => {
         } else {
           setPresenceInfo("No attendance logs found");
         }
-
       } else {
         // Present case
         const inLog = todayLogs.find(log => log.type === "In");
@@ -62,8 +61,16 @@ const EmployeeDashboardContent = () => {
     fetchData();
   }, [userData.id]);
 
-  const formatTime = (dateString) => {
-    return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formatTime = (isoDateTimeString) => {
+    const [, timeWithOffset] = isoDateTimeString.split("T"); 
+    const [time] = timeWithOffset.split("+"); 
+    const [hours, minutes] = time.split(":");
+
+    const h = parseInt(hours, 10);
+    const suffix = h >= 12 ? "PM" : "AM";
+    const formattedHour = h % 12 === 0 ? 12 : h % 12;
+
+    return `${formattedHour}:${minutes} ${suffix}`;
   };
 
   return (
