@@ -11,11 +11,15 @@ class AttendanceService{
         return response.data;
     }
     static async getLogsBetweenDates(id, startDate, endDate) {
-    const response = await httpClient.get(
-        `AttendanceLog/between-dates?employeeId=${id}&startDate=${startDate}&endDate=${endDate}`
-    );
-    return response.data;
-}
+        const response = await httpClient.get(
+            `AttendanceLog/between-dates?employeeId=${id}&startDate=${startDate}&endDate=${endDate}`
+        );
+        return response.data;
+    }
+    static async getLastAttendanceLog(id){
+        const response = await httpClient.get(`AttendanceLog/employee/last-two/${id}`)
+        return response.data;
+    }
 
 
 }

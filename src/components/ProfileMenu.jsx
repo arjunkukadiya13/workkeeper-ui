@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { FaUserCircle } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const ProfileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate(); 
-
+  const userData = useSelector((state)=>state.userData);
   
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -35,8 +36,8 @@ const ProfileMenu = () => {
       </div>
 
       <div className={`profile-dropdown ${isOpen ? "show" : ""}`}>
-        <h3 className="text-lg font-semibold">Arjun Kukadiya</h3>
-        <p className="text-sm text-gray-600">arjunkukadiya606@gmail.com</p>
+        <h3 className="text-lg font-semibold">{userData.name}</h3>
+        <p className="text-sm text-gray-600">{userData.personalEmail}</p>
         <hr className="my-2" />
         <button 
           onClick={handleLogout}

@@ -1,9 +1,11 @@
+import { useSelector } from "react-redux";
 import "./Header.css";
 import React, { lazy,Suspense,useState, useEffect } from "react";
 const ProfileMenu = lazy(() => import("./ProfileMenu"));
 
 const Header = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const userData = useSelector((state)=>state.userData);
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
@@ -20,7 +22,7 @@ const Header = () => {
           </p>
         </div>
       <div className="profile-container">
-      <h3 >Arjun</h3>
+      <h3 >{userData.name}</h3>
         <ProfileMenu />
       </div>
     </div>
