@@ -1,0 +1,51 @@
+.notification-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+}
+
+.notification-title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.notification-divider {
+  margin-bottom: 1rem;
+}
+
+.notification-card {
+  margin-bottom: 1rem;
+  border-left: 5px solid #1976d2;
+  transition: background-color 0.3s ease;
+}
+
+.notification-card.unread {
+  background-color: #e3f2fd;
+}
+
+.notification-card.read {
+  background-color: #ffffff;
+}
+
+.notification-message {
+  font-weight: 500;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.page-number {
+  margin: 0 1rem;
+}
+
+.no-notifications {
+  text-align: center;
+  padding: 2rem 0;
+  color: #888;
+}

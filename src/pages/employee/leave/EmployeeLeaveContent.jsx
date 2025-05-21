@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import LeaveBalanceWidget from "./balance/LeaveBalanceWidget";
 import LeaveHistoryData from "./history/LeaveHistoryData";
 import ApplyForLeavePage from "./apply/ApplyForLeavePage";
+import NotificationService from "../../../services/notificationService";
 
 const EmployeeLeaveContent = () => {
   const [leaveType, setLeaveType] = useState("");
@@ -48,9 +49,20 @@ const EmployeeLeaveContent = () => {
     try {
       await LeaveService.addNewLeave(payload);
       alert("Leave applied successfully");
+      const now = new Date().toISOString();
+
+      const notificationPayLoad = {
+        employeeId: selectedApprover?.id || 0,
+        message: `${userData.name} has applied for ${leaveType} leave.`,
+        messageType: "Leave Application",
+        sentFrom: userData.id,
+        isRead: false,
+        readAt: null,
+        sentAt: now,
+      };
+      await NotificationService.newLeaveNotification(notificationPayLoad);
 
       fetchLeaves();
-
       setLeaveType("");
       setFromDate("");
       setToDate("");
