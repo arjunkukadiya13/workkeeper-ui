@@ -16,6 +16,9 @@ class AttendanceService{
         );
         return response.data;
     }
+    static async updateAttendance(id,data){
+        const response = await httpClient.put(`AttendanceLog/${id}`,data)
+    }
     static async getLastAttendanceLog(id){
         const response = await httpClient.get(`AttendanceLog/employee/last-two/${id}`)
         return response.data;
