@@ -13,12 +13,20 @@ class LeaveService{
         const response = await httpClient.post("/Leave",data)
         return response.data
     }
+    static async getLeavesData(){
+        const response = await httpClient.get("/Leave");
+        return response.data;
+    }
+    static async updateLeaveStatus(leaveId,updatedLeave){
+        const response = await httpClient.put(`/Leave/${leaveId}`,updatedLeave)
+        return response.data
+    }
     static async getUpcomingHoliday(date) {
-    const response = await httpClient.get("/Holiday/from-date", {
-        params: { date }
-    });
-    return response.data;
-}
+        const response = await httpClient.get("/Holiday/from-date", {
+            params: { date }
+        });
+        return response.data;
+    }
 
 }
 export default LeaveService;

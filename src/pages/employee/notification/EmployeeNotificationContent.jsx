@@ -1,124 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import "./EmployeeNotificationContent.css";
-import {
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  Chip,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Divider,
-} from "@mui/material";
-import { MarkEmailRead, MarkEmailUnread } from "@mui/icons-material";
-
-const mockNotifications = [
-  {
-    id: 1,
-    type: "Attendance",
-    message: "You have a missing attendance entry for 13th May.",
-    date: "2025-05-13",
-    read: false,
-  },
-  {
-    id: 2,
-    type: "Leave",
-    message: "Your leave from 5th to 7th May has been approved.",
-    date: "2025-05-08",
-    read: true,
-  },
-  {
-    id: 3,
-    type: "System",
-    message: "New feature update: View holiday calendar from dashboard.",
-    date: "2025-05-10",
-    read: false,
-  },
-];
+import { useSelector } from 'react-redux';
+import NotificationService from '../../../services/notificationService';
+import { Card, CardContent, Typography, Button, Divider, Box } from '@mui/material';
 
 const EmployeeNotificationContent = () => {
-  const [notifications, setNotifications] = useState(mockNotifications);
-  const [filter, setFilter] = useState("All");
+  const userData = useSelector((state) => state.userData);
 
-  const handleToggleRead = (id) => {
-    const updated = notifications.map((n) =>
-      n.id === id ? { ...n, read: !n.read } : n
-    );
-    setNotifications(updated);
+  const [notifications, setNotifications] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchNotifications = async () => {
+    try {
+      const data = await NotificationService.getEmployeeNotification(userData.id, page, pageSize);
+      setNotifications(data);
+      setHasMore(data.length === pageSize);
+    } catch (error) {
+      console.error("Failed to fetch notifications", error);
+    }
   };
 
-  const filteredNotifications =
-    filter === "All"
-      ? notifications
-      : notifications.filter((n) => n.type === filter);
+  useEffect(() => {
+    if (userData?.id) fetchNotifications();
+  }, [page, userData]);
+
+  const handlePrev = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
+  const handleNext = () => {
+    if (hasMore) setPage(page + 1);
+  };
 
   return (
-    <div className="employee-notification-container">
-      <Typography variant="h5" gutterBottom>
+    <div className="notification-container">
+      <Typography variant="h5" className="notification-title">
         Notifications
       </Typography>
-
-      <FormControl style={{ minWidth: 200, marginBottom: 20 }}>
-        <InputLabel>Filter by Type</InputLabel>
-        <Select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          label="Filter by Type"
+      <Divider className="notification-divider" />
+      {notifications.length === 0 ? (
+        <Typography className="no-notifications">No notifications to display.</Typography>
+      ) : (
+        notifications.map((notif) => (
+          <Card key={notif.id} className={`notification-card ${notif.isRead ? 'read' : 'unread'}`}>
+            <CardContent>
+              <Typography variant="body1" className="notification-message">
+                {notif.message}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Sent at: {new Date(notif.sentAt).toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        ))
+      )}
+      <Box className="pagination-controls">
+        <Button
+          variant="outlined"
+          disabled={page === 1}
+          onClick={handlePrev}
         >
-          <MenuItem value="All">All</MenuItem>
-          <MenuItem value="Attendance">Attendance</MenuItem>
-          <MenuItem value="Leave">Leave</MenuItem>
-          <MenuItem value="System">System</MenuItem>
-        </Select>
-      </FormControl>
-
-      <List>
-        {filteredNotifications.map((notification) => (
-          <div key={notification.id}>
-            <ListItem
-              style={{
-                backgroundColor: notification.read ? "#f5f5f5" : "#e3f2fd",
-                borderRadius: 8,
-                marginBottom: 10,
-              }}
-              secondaryAction={
-                <IconButton
-                  edge="end"
-                  onClick={() => handleToggleRead(notification.id)}
-                >
-                  {notification.read ? (
-                    <MarkEmailUnread color="action" />
-                  ) : (
-                    <MarkEmailRead color="primary" />
-                  )}
-                </IconButton>
-              }
-            >
-              <ListItemText
-                primary={notification.message}
-                secondary={`Date: ${notification.date}`}
-              />
-              <Chip
-                label={notification.type}
-                color={
-                  notification.type === "Attendance"
-                    ? "warning"
-                    : notification.type === "Leave"
-                    ? "success"
-                    : "info"
-                }
-              />
-            </ListItem>
-            <Divider />
-          </div>
-        ))}
-        {filteredNotifications.length === 0 && (
-          <Typography>No notifications found.</Typography>
-        )}
-      </List>
+          Previous
+        </Button>
+        <Typography variant="body2" className="page-number">
+          Page {page}
+        </Typography>
+        <Button
+          variant="outlined"
+          disabled={!hasMore}
+          onClick={handleNext}
+        >
+          Next
+        </Button>
+      </Box>
     </div>
   );
 };
