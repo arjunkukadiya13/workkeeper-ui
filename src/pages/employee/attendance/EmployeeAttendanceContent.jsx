@@ -14,67 +14,81 @@ const EmployeeInformationWidget = lazy(() =>
 const EmployeeAttendanceContent = () => {
   const userData = useSelector((state) => state.userData);
   const [attendanceLogs, setAttendanceLogs] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [editingLog, setEditingLog] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchAttendanceLogs = async () => {
+  // Fetch attendance logs for given page
+  const fetchPaginatedAttendanceLogs = async (page = 1) => {
+    if (!userData?.id) return;
+
     try {
-      const logs = await AttendanceService.getUserAttendance(userData.id);
-      logs.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-      setAttendanceLogs(logs);
+      const response = await AttendanceService.getUserAttendancePaginate(userData.id, page);
+
+      const pages = Number.isInteger(response?.totalPages) ? response.totalPages : 1;
+
+      setAttendanceLogs(response);
+      setTotalPages(pages);
+      setCurrentPage(page);
     } catch (error) {
-      console.error("Error fetching attendance logs:", error);
+      console.error("Error fetching paginated attendance logs:", error);
+      setAttendanceLogs([]);
+      setTotalPages(1);
+      setCurrentPage(1);
     }
   };
 
+  // Initial load and on userData.id change
   useEffect(() => {
-    fetchAttendanceLogs();
-  }, []);
+    fetchPaginatedAttendanceLogs(1);
+  }, [userData?.id]);
 
   return (
     <div className="attendance-container">
       <h2 className="attendance-header">Employee Attendance</h2>
 
-      {/* Employee Details */}
       <Suspense fallback={<div>Loading Employee Info...</div>}>
         <EmployeeInformationWidget />
       </Suspense>
 
-      {/* Add Attendance Form */}
       <Suspense fallback={<div>Loading Add Form...</div>}>
         <AddAttendanceForm
           attendanceLogs={attendanceLogs}
-          refreshAttendanceLogs={fetchAttendanceLogs}
+          refreshAttendanceLogs={() => fetchPaginatedAttendanceLogs(currentPage)}
         />
       </Suspense>
 
-      {/* Filter Logs by Date */}
       <Suspense fallback={<div>Loading Filters...</div>}>
         <FilterAttendanceLogs
-          userId={userData.id}
-          startDate={startDate}
-          endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
+          userId={userData?.id}
+          startDate=""
+          endDate=""
+          setStartDate={() => {}}
+          setEndDate={() => {}}
           setAttendanceLogs={setAttendanceLogs}
         />
       </Suspense>
 
-      {/* Attendance Logs Table */}
+      {!Array.isArray(attendanceLogs) && (
+        <div style={{ color: "red" }}>Error: attendanceLogs is not an array!</div>
+      )}
+
       <Suspense fallback={<div>Loading Attendance Logs...</div>}>
         <AttendanceLogDataPage
           attendanceLogs={attendanceLogs}
           onEdit={setEditingLog}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={fetchPaginatedAttendanceLogs}
         />
       </Suspense>
 
-      {/* Edit Modal */}
       <Suspense fallback={null}>
         {editingLog && (
           <EditAttendanceModal
             log={editingLog}
             onClose={() => setEditingLog(null)}
+            refreshAttendanceLogs={() => fetchPaginatedAttendanceLogs(currentPage)}
           />
         )}
       </Suspense>
