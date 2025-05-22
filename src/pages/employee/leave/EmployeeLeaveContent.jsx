@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./EmployeeLeaveContent.css";
 import {
+  Typography,
   TextField,
   MenuItem,
   Button,
-  Typography,
   Select,
   InputLabel,
   FormControl,
@@ -23,13 +23,12 @@ const EmployeeLeaveContent = () => {
   const [toDate, setToDate] = useState("");
   const [note, setNote] = useState("");
   const [ccTo, setCcTo] = useState("");
-
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [ccOptions, setCcOptions] = useState([]);
   const [leaveHistory, setLeaveHistory] = useState([]);
+  const [leaveBalance, setLeaveBalance] = useState({});
 
   const userData = useSelector((state) => state.userData);
-
 
   const handleApply = async () => {
     const selectedLeaveType = leaveTypes.find((lt) => lt.leaveName === leaveType);
@@ -49,8 +48,8 @@ const EmployeeLeaveContent = () => {
     try {
       await LeaveService.addNewLeave(payload);
       alert("Leave applied successfully");
-      const now = new Date().toISOString();
 
+      const now = new Date().toISOString();
       const notificationPayLoad = {
         employeeId: selectedApprover?.id || 0,
         message: `${userData.name} has applied for ${leaveType} leave.`,
@@ -60,9 +59,11 @@ const EmployeeLeaveContent = () => {
         readAt: null,
         sentAt: now,
       };
-      await NotificationService.newLeaveNotification(notificationPayLoad);
 
-      fetchLeaves();
+      await NotificationService.newLeaveNotification(notificationPayLoad);
+      await fetchLeaves();
+      await calculateLeaveBalance();
+
       setLeaveType("");
       setFromDate("");
       setToDate("");
@@ -74,7 +75,6 @@ const EmployeeLeaveContent = () => {
   };
 
   const handleWithdraw = async (id) => {
-
     const updated = leaveHistory.filter((leave) => leave.id !== id);
     setLeaveHistory(updated);
     alert("Leave withdrawn successfully");
@@ -123,18 +123,40 @@ const EmployeeLeaveContent = () => {
     }
   };
 
+  const calculateLeaveBalance = async () => {
+    try {
+      const types = await LeaveService.getLeaveTypes();
+      const taken = await LeaveService.countEmployeeLeavebyType(userData.id);
+
+      const takenMap = {};
+      taken.forEach((leave) => {
+        takenMap[leave.leaveTypeId] = leave.leaveCount;
+      });
+
+      const balance = {};
+      types.forEach((type) => {
+        const used = takenMap[type.id] || 0;
+        balance[type.leaveName] = type.noOfDays - used;
+      });
+
+      setLeaveBalance(balance);
+    } catch (error) {
+      console.error("Error calculating leave balance:", error);
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       await fetchLeaveTypes();
       await fetchHRDetails();
       await fetchLeaves();
+      await calculateLeaveBalance();
     };
 
     loadData();
   }, []);
 
   return (
-    
     <div className="employee-leave-container">
       <ApplyForLeavePage
         leaveType={leaveType}
@@ -152,12 +174,12 @@ const EmployeeLeaveContent = () => {
         handleApply={handleApply}
       />
 
-      <LeaveBalanceWidget/>
+      <LeaveBalanceWidget leaveBalance={leaveBalance} />
+
       <LeaveHistoryData
         leaveHistory={leaveHistory}
         handleWithdraw={handleWithdraw}
       />
-
     </div>
   );
 };
