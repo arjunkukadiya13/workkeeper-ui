@@ -1,25 +1,26 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-import "./EmployeeAttendanceContent.css";
-import AttendanceService from "../../../../services/attendanceService";
+// import "./EmployeeAttendanceContent.css";
+import AttendanceService from "../../../../../services/attendanceService";
+import { useParams } from "react-router-dom";
 
-const AttendanceLogDataPage = lazy(() => import("./view-attendance/data/AttendanceLogDataPage"));
-const FilterAttendanceLogs = lazy(() => import("./view-attendance/filter/FilterAttendanceLogs"));
-const EditAttendanceModal = lazy(() => import("./view-attendance/edit/EditAttendanceModal"));
+const AttendanceLogDataPage = lazy(() => import("./data/AttendanceLogDataPage"));
+const FilterAttendanceLogs = lazy(() => import("./filter/FilterAttendanceLogs"));
+const EditAttendanceModal = lazy(() => import("./edit/EditAttendanceModal"));
 const EmployeeInformationWidget = lazy(() =>
-  import("../../../../components/employee-components/EmployeeInformationWidget")
+  import("../../../../../components/employee-components/EmployeeInformationWidget")
 );
 
 const EmployeeAttendanceContent = () => {
+  const { employeeId } = useParams();
   const [attendanceLogs, setAttendanceLogs] = useState([]);
   const [editingLog, setEditingLog] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const fetchPaginatedAttendanceLogs = async (page = 1) => {
-    if (!userData?.id) return;
 
     try {
-      const response = await AttendanceService.getUserAttendancePaginate(userData.id, page);
+      const response = await AttendanceService.getUserAttendancePaginate(employeeId, page);
 
       const pages = Number.isInteger(response?.totalPages) ? response.totalPages : 1;
 
@@ -34,10 +35,9 @@ const EmployeeAttendanceContent = () => {
     }
   };
 
-  // Initial load and on userData.id change
   useEffect(() => {
     fetchPaginatedAttendanceLogs(1);
-  }, [userData?.id]);
+  }, [employeeId]);
 
   return (
     <div className="attendance-container">
@@ -49,7 +49,7 @@ const EmployeeAttendanceContent = () => {
 
       <Suspense fallback={<div>Loading Filters...</div>}>
         <FilterAttendanceLogs
-          userId={userData?.id}
+          userId={employeeId}
           startDate=""
           endDate=""
           setStartDate={() => {}}

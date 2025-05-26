@@ -1,6 +1,6 @@
 import React from "react";
-import AttendanceService from "../../../../services/attendanceService";
-import ".././EmployeeAttendanceContent.css"; // or separate css if needed
+import AttendanceService from "../../../../../../services/attendanceService";
+// import ".././EmployeeAttendanceContent.css"; 
 
 const FilterAttendanceLogs = ({
   userId,

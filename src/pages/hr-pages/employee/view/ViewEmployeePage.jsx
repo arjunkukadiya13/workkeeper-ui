@@ -31,7 +31,9 @@ const ViewEmployeePage = () => {
 
     fetchEmployee();
   }, [employeeId]);
-
+  const viewEmployeeAttendance= () =>{
+      navigate(`/hr/employee/view-employee/attendance/${employeeId}`);
+  }
   if (!employee) return <Typography>Loading...</Typography>;
 
   return (
@@ -141,6 +143,7 @@ const ViewEmployeePage = () => {
           variant="text"
           size="small"
           sx={{ marginTop: 1, textTransform: "none" }}
+          onClick={viewEmployeeAttendance}
         >
           View Full Attendance →
         </Button>
