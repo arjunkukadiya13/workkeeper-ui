@@ -5,6 +5,7 @@ import "./HRUserDashboard.css";
 import LeaveService from "../../../services/leaveService";
 import AttendanceService from "../../../services/attendanceService";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 
 const HRUserDashboard = () => {
@@ -12,6 +13,7 @@ const HRUserDashboard = () => {
     const [attendanceLog, setAttendanceLog] = useState([]);
     const [presenceInfo, setPresenceInfo] = useState("Loading...");
     const userData = useSelector((state) => state.userData);
+    const navigate = useNavigate();
   
     useEffect(() => {
       const fetchData = async () => {
@@ -85,7 +87,7 @@ const HRUserDashboard = () => {
              Icon={CalendarDays}
             />
           <InformationWidget infotitle="Your Team" info="Arjun (Lead), Karan, Gopal" Icon={Users} />
-          <InformationWidget infotitle="Your Presence" info={presenceInfo} Icon={Clock} />
+          <InformationWidget infotitle="Your Presence" info={presenceInfo} Icon={Clock}  onClick={()=>{navigate(`/hr/attendance/`);}} />
           <InformationWidget infotitle="Today's Presence" info="5 in Office, 3 Remote" Icon={Home} />
           <InformationWidget infotitle="Quick Info" info="Manager: Alice, ID: 1023" Icon={Info} />
       </div>

@@ -1,8 +1,7 @@
-import { useSelector } from "react-redux";
 import "./EmployeeInformationWidget.css"
 
-const EmployeeInformationWidget = () => {
-    const userData = useSelector((state) => state.userData);
+const EmployeeInformationWidget = ({userData}) => {
+  // console.log(userData)
   return (
     <div className="attendance-details">
         <div className="attendance-row">

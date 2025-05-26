@@ -38,7 +38,7 @@ const UserAttendance = () => {
 
       {/* Employee Details */}
       <Suspense fallback={<div>Loading Employee Info...</div>}>
-        <EmployeeInformationWidget />
+        <EmployeeInformationWidget userData={userData}/>
       </Suspense>
 
       {/* Add Attendance Form */}

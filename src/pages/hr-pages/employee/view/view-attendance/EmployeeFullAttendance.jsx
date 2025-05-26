@@ -1,7 +1,8 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-// import "./EmployeeAttendanceContent.css";
+import "./EmployeeFullAttendance.css";
 import AttendanceService from "../../../../../services/attendanceService";
 import { useParams } from "react-router-dom";
+import EmployeeService from "../../../../../services/employeeService";
 
 const AttendanceLogDataPage = lazy(() => import("./data/AttendanceLogDataPage"));
 const FilterAttendanceLogs = lazy(() => import("./filter/FilterAttendanceLogs"));
@@ -11,6 +12,7 @@ const EmployeeInformationWidget = lazy(() =>
 );
 
 const EmployeeAttendanceContent = () => {
+  const [userData,setUserData] = useState([])
   const { employeeId } = useParams();
   const [attendanceLogs, setAttendanceLogs] = useState([]);
   const [editingLog, setEditingLog] = useState(null);
@@ -20,8 +22,7 @@ const EmployeeAttendanceContent = () => {
   const fetchPaginatedAttendanceLogs = async (page = 1) => {
 
     try {
-      const response = await AttendanceService.getUserAttendancePaginate(employeeId, page);
-
+      const response = await AttendanceService.getUserAttendancePaginate(10, page);
       const pages = Number.isInteger(response?.totalPages) ? response.totalPages : 1;
 
       setAttendanceLogs(response);
@@ -34,8 +35,13 @@ const EmployeeAttendanceContent = () => {
       setCurrentPage(1);
     }
   };
+  
+  const fetchUserData = async () =>{
+    setUserData(await EmployeeService.getEmployeeById(employeeId))
+  }
 
   useEffect(() => {
+    fetchUserData();
     fetchPaginatedAttendanceLogs(1);
   }, [employeeId]);
 
@@ -44,7 +50,7 @@ const EmployeeAttendanceContent = () => {
       <h2 className="attendance-header">Employee Attendance</h2>
 
       <Suspense fallback={<div>Loading Employee Info...</div>}>
-        <EmployeeInformationWidget />
+        <EmployeeInformationWidget userData={userData}/>
       </Suspense>
 
       <Suspense fallback={<div>Loading Filters...</div>}>

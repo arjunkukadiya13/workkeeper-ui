@@ -48,7 +48,7 @@ const EmployeeAttendanceContent = () => {
       <h2 className="attendance-header">Employee Attendance</h2>
 
       <Suspense fallback={<div>Loading Employee Info...</div>}>
-        <EmployeeInformationWidget />
+        <EmployeeInformationWidget userData={userData} />
       </Suspense>
 
       <Suspense fallback={<div>Loading Add Form...</div>}>

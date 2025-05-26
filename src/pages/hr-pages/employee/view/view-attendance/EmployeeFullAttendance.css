@@ -1,0 +1,94 @@
+.attendance-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 2px solid rgb(41, 37, 37);
+}
+
+.attendance-header {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.date-range-filter {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.date-range-filter h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.date-range-filter button {
+  background-color: #1976d2;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.date-range-filter button:hover {
+  background-color: #1565c0;
+}
+
+.date-picker-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.date-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.date-picker label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.date-picker input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.attendance-logs {
+  margin-top: 20px;
+}
+
+.attendance-logs h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.attendance-logs table {
+  width: 100%;
+  border-collapse: collapse;
+  border: solid 3px;
+}
+
+.attendance-logs th,
+.attendance-logs td {
+  border: 2px solid rgba(18, 17, 17, 0.2);
+  padding: 8px;
+  text-align: center;
+}
+
+.attendance-logs th {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: bold;
+}
