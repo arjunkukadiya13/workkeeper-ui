@@ -1,6 +1,7 @@
 import React, { lazy,Suspense } from "react";
 
-const Header = lazy(() => import("../../../components/Header"));
+const Header = lazy(() => import("../../../../components/Header"));
+
 const EmployeeLeavesPageContent = lazy(() => import("./view-leaves/EmployeeLeavesPageContent"));
 const SideBar = lazy(() => import("../../../../components/HRSideBar"));
 

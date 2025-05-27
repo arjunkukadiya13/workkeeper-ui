@@ -1,26 +1,30 @@
-import { Button, Typography,useState } from "@mui/material";
-import "./EmployeeLeavesPageContent.css"
+import { Button, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
+import "./EmployeeLeavesPageContent.css";
 import LeaveService from "../../../../../services/leaveService";
-import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EmployeeLeavesPageContent = () => {
   const [leaveHistory, setLeaveHistory] = useState([]);
+  const { employeeId } = useParams();
+  const navigate = useNavigate();
   const fetchLeaves = async () => {
     try {
-      const leavesData = await LeaveService.getEmployeeLeaveById(id);
+      const leavesData = await LeaveService.getEmployeeLeaveById(employeeId);
+      const typesData = await LeaveService.getLeaveTypes();
+
 
       const mappedLeaves = leavesData.map((leave, index) => {
-        const leaveTypeName = leaveTypes.find((lt) => lt.id === leave.leaveTypeId)?.leaveName || "Unknown";
-        const ccToEmail = ccOptions.find((emp) => emp.id === leave.approverId)?.organizationEmail || "";
+        const leaveTypeName = typesData.find((lt) => lt.id === leave.leaveTypeId)?.leaveName || "Unknown";
 
         return {
           id: leave.id || index + 1,
           leaveType: leaveTypeName,
-          fromDate: leave.startDate.split("T")[0],
-          toDate: leave.endDate.split("T")[0],
+          fromDate: leave.startDate?.split("T")[0],
+          toDate: leave.endDate?.split("T")[0],
           status: leave.status,
           note: leave.note,
-          ccTo: ccToEmail,
+          ccTo: leave.approverName || "-",
         };
       });
 
@@ -29,12 +33,18 @@ const EmployeeLeavesPageContent = () => {
       console.error("Error fetching employee leaves:", error);
     }
   };
-  useEffect(()=>{
-      fetchLeaves();
-  },[])
+
+  useEffect(() => {
+    fetchLeaves();
+  }, [employeeId]);
 
   return (
     <div>
+      <Button variant="contained"
+        onClick={()=>{navigate(-1)}}
+      >
+        Back
+      </Button>
       <Typography variant="h6" sx={{ marginTop: 4 }}>
         Leave History
       </Typography>
@@ -46,7 +56,7 @@ const EmployeeLeavesPageContent = () => {
             <th>To</th>
             <th>Status</th>
             <th>Note</th>
-            <th>CC To</th>
+            <th>Approved By</th>
           </tr>
         </thead>
         <tbody>
@@ -57,7 +67,7 @@ const EmployeeLeavesPageContent = () => {
               <td>{leave.toDate}</td>
               <td>{leave.status}</td>
               <td>{leave.note}</td>
-              <td>{leave.ccTo || "-"}</td>
+              <td>{leave.ccTo}</td>
             </tr>
           ))}
         </tbody>
@@ -66,5 +76,4 @@ const EmployeeLeavesPageContent = () => {
   );
 };
 
-
-export default EmployeeLeavesPageContent
+export default EmployeeLeavesPageContent;

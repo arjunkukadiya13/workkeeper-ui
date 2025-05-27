@@ -34,6 +34,9 @@ const ViewEmployeePage = () => {
   const viewEmployeeAttendance= () =>{
       navigate(`/hr/employee/view-employee/attendance/${employeeId}`);
   }
+  const viewEmployeeLeave = () =>{
+      navigate(`/hr/employee/view-employee/leaves/${employeeId}`);
+  }
   if (!employee) return <Typography>Loading...</Typography>;
 
   return (
@@ -153,7 +156,9 @@ const ViewEmployeePage = () => {
 
   {/* Leave Summary */}
   <Grid item xs={12} sm={4}>
-    <Card className="info-card">
+    <Card
+    onClick={viewEmployeeLeave} 
+    className="info-card">
       <CardContent>
         <Typography variant="h6" gutterBottom>
           Leave Summary

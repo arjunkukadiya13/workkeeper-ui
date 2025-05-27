@@ -1,8 +1,9 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import "./EmployeeFullAttendance.css";
 import AttendanceService from "../../../../../services/attendanceService";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import EmployeeService from "../../../../../services/employeeService";
+import { Button } from "@mui/material";
 
 const AttendanceLogDataPage = lazy(() => import("./data/AttendanceLogDataPage"));
 const FilterAttendanceLogs = lazy(() => import("./filter/FilterAttendanceLogs"));
@@ -18,7 +19,7 @@ const EmployeeAttendanceContent = () => {
   const [editingLog, setEditingLog] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
+  const navigate = useNavigate();
   const fetchPaginatedAttendanceLogs = async (page = 1) => {
 
     try {
@@ -46,6 +47,12 @@ const EmployeeAttendanceContent = () => {
   }, [employeeId]);
 
   return (
+    <>
+    <Button variant="contained"
+            onClick={()=>{navigate(-1)}}
+          >
+            Back
+    </Button>
     <div className="attendance-container">
       <h2 className="attendance-header">Employee Attendance</h2>
 
@@ -85,6 +92,7 @@ const EmployeeAttendanceContent = () => {
         )}
       </Suspense>
     </div>
+    </>
   );
 };
 
