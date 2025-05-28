@@ -35,6 +35,5 @@ class AttendanceService{
         return response.data;
     }
 
-
 }
 export default AttendanceService;

@@ -29,40 +29,31 @@ const AddAttendanceForm = ({ attendanceLogs, refreshAttendanceLogs }) => {
   }, []);
 
   const handleAddAttendance = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!formData.date || !formData.time || !formData.type) {
-      alert("Please fill all fields!");
-      return;
-    }
+  if (!formData.date || !formData.time || !formData.type) {
+    alert("Please fill all fields!");
+    return;
+  }
 
-    if (
-      attendanceLogs.length > 0 &&
-      attendanceLogs[0].type === formData.type
-    ) {
-      alert(`Cannot add two "${formData.type}" logs consecutively!`);
-      return;
-    }
+  const dateTime = new Date(`${formData.date}T${formData.time}:00`);
 
-    const now = new Date();
-    const isoDateTime = now.toISOString();
-
-    const payload = {
-      employeeId: userData.id,
-      type: formData.type,
-      source: "Web",
-      time: `${formData.date}T${formData.time}:00`,
-      date: formData.date,
-      updatedAt: isoDateTime,
-    };
-
-    try {
-      await AttendanceService.addUserAttendance(payload);
-      await refreshAttendanceLogs();
-    } catch (error) {
-      console.error("Error adding attendance:", error);
-    }
+  const payload = {
+    employeeId: userData.id,
+    type: formData.type,
+    source: "Web",
+    time: dateTime.toISOString(), 
+    date: formData.date,
+    updatedAt: new Date().toISOString(),
   };
+
+  try {
+    await AttendanceService.addUserAttendance(payload);
+    await refreshAttendanceLogs();
+  } catch (error) {
+    console.error("Error adding attendance:", error);
+  }
+};
 
   return (
     <div className="add-attendance-form">
