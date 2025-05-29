@@ -88,7 +88,7 @@ const HRUserDashboard = () => {
             />
           <InformationWidget infotitle="Your Team" info="Arjun (Lead), Karan, Gopal" Icon={Users} />
           <InformationWidget infotitle="Your Presence" info={presenceInfo} Icon={Clock}  onClick={()=>{navigate(`/hr/attendance/`);}} />
-          <InformationWidget infotitle="Today's Presence" info="5 in Office, 3 Remote" Icon={Home} />
+          <InformationWidget infotitle="Today's Presence" info="5 in Office, 3 Remote" Icon={Home} onClick={()=>{navigate(`/hr/attendance/today-presence`);}} />
           <InformationWidget infotitle="Quick Info" info="Manager: Alice, ID: 1023" Icon={Info} />
       </div>
        
