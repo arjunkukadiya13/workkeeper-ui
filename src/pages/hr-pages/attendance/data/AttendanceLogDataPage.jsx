@@ -9,7 +9,7 @@ const AttendanceLogDataPage = ({ attendanceLogs, onEdit }) => {
         <thead>
           <tr>
             <th>Date</th>
-            <th>Time</th>
+            <th>Time (IST)</th>
             <th>Type</th>
             <th>Action</th>
           </tr>
@@ -18,10 +18,25 @@ const AttendanceLogDataPage = ({ attendanceLogs, onEdit }) => {
           {attendanceLogs.map((log, index) => {
             const isEditable = log.source === "Web";
 
+            const formattedDate = new Date(log.date).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            });
+
+            const formattedTime = log.time
+              ? new Date(log.time).toLocaleTimeString("en-IN", {
+                  timeZone: "Asia/Kolkata",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+              : "N/A";
+
             return (
               <tr key={index}>
-                <td>{log.date}</td>
-                <td>{log.time?.substring(11, 16) || "N/A"}</td>
+                <td>{formattedDate}</td>
+                <td>{formattedTime}</td>
                 <td>{log.type}</td>
                 <td>
                   <button

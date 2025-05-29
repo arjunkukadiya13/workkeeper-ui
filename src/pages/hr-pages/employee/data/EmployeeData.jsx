@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import "./EmployeeData.css";
 import EmployeeService from "../../../../services/employeeService";
 import DepartmentService from "../../../../services/departmentService";
+import RoleServices from "../../../../services/roleServices";
 
 const EmployeeData = () => {
   const [employees, setEmployees] = useState([]);
@@ -27,6 +28,7 @@ const EmployeeData = () => {
   const [totalCount, setTotalCount] = useState(0);
   const rowsPerPage = 5;
   const [departments, setDepartments] = useState([]);
+  const [roles, setRoles] = useState([]);
 
 
   const [searchName, setSearchName] = useState("");
@@ -50,10 +52,15 @@ const EmployeeData = () => {
     }
   };
 
+  const fetchRoles = async () =>{
+    setRoles(await RoleServices.getRoles());
+  }
   useEffect(() => {
     fetchDepartments();
     fetchEmployeeData();
+    fetchRoles();
   }, [page]);
+
 
   const handleNavigateToAdd = () => {
     navigate("/hr/employee/add-employee");
@@ -66,13 +73,9 @@ const EmployeeData = () => {
     navigate(`/hr/employee/view-employee/${employeeId}`);
   };
 
-  const handleFilter = () => {
-    console.log("Filters applied:", {
-      searchName,
-      filterDepartment,
-      filterStatus,
-      filterRole,
-    });
+  const handleFilter = async () => {
+    const data = await EmployeeService.getFilteredEmployee(page,rowsPerPage,filterDepartment,filterRole,searchName);
+    setEmployees(data.employees)
   };
 
   const pageCount = Math.ceil(totalCount / rowsPerPage);
@@ -129,7 +132,7 @@ const EmployeeData = () => {
           </Select>
         </FormControl>
 
-        <FormControl size="small" sx={{ minWidth: 150 }}>
+        {/* <FormControl size="small" sx={{ minWidth: 150 }}>
           <InputLabel>Status</InputLabel>
           <Select
             value={filterStatus}
@@ -140,7 +143,7 @@ const EmployeeData = () => {
             <MenuItem value="Active">Active</MenuItem>
             <MenuItem value="Inactive">Inactive</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
 
         <FormControl size="small" sx={{ minWidth: 150 }}>
           <InputLabel>Role</InputLabel>
@@ -150,7 +153,12 @@ const EmployeeData = () => {
             label="Role"
           >
             <MenuItem value="">All</MenuItem>
-            {/* Add role options here dynamically */}
+            {roles.map((r)=> {
+              return(
+                <MenuItem key={r.id} value={r.roleName}>
+                 {r.roleName}
+                </MenuItem>);
+            })}
           </Select>
         </FormControl>
 

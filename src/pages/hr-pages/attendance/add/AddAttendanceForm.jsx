@@ -45,7 +45,7 @@ const AddAttendanceForm = ({ attendanceLogs, refreshAttendanceLogs }) => {
     date: formData.date,
     updatedAt: new Date().toISOString(),
   };
-
+  
   try {
     await AttendanceService.addUserAttendance(payload);
     await refreshAttendanceLogs();

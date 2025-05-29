@@ -17,6 +17,14 @@ class EmployeeService{
         throw error;
       }
   }
+  static async getFilteredEmployee(pageNumber,pageSize,deptName,role,name){
+      try{
+        const response = await httpClient.get(`/Employee/paginated?pageNumber=${pageNumber}&pageSize=${pageSize}&deptName=${deptName}&role=${role}&name=${name}`);
+        return response.data;
+      }catch (error){
+        throw error;
+      }
+  }
 
   static async addEmployee(data){
     try{
