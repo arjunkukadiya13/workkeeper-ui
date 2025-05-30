@@ -4,22 +4,26 @@ const InformationWidget = lazy(() => import("../../../components/InformationWidg
 import "./HRUserDashboard.css";
 import LeaveService from "../../../services/leaveService";
 import AttendanceService from "../../../services/attendanceService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setTodayLeaveData } from "../../../data/leaveData/leaveSlice";
 
 const HRUserDashboard = () => {
   const [holidays, setHoliday] = useState([]);
+  const [todayLeaveCount, setTodayLeaveCount] = useState(0);
   const [presenceInfo, setPresenceInfo] = useState("Loading...");
   const userData = useSelector((state) => state.userData);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
       const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
       const holidays = await LeaveService.getUpcomingHoliday(today);
-      
       const logs = await AttendanceService.getLastAttendanceLog(userData.id);
-
+      const leavesData = await LeaveService.getTodaysOnLeaveEmployee("2025-5-22");
+      setTodayLeaveCount(leavesData.length);
+      dispatch(setTodayLeaveData(leavesData));
       const todayLogs = logs.filter((log) => log.date === today);
 
       if (todayLogs.length === 0) {
@@ -71,7 +75,14 @@ const HRUserDashboard = () => {
       <div className="container-border">
         <div className="dashboard-container">
           <div className="widget-row">
-            <InformationWidget infotitle="Today's Leave" info="Arjun, on leave" Icon={CalendarDays} />
+            <InformationWidget
+              infotitle="Today's Leave"
+              info={`${todayLeaveCount} employee${todayLeaveCount === 1 ? "" : "s"} on leave`}
+              Icon={CalendarDays}
+              onClick={() => {
+                navigate(`/hr/leave-management/todays-leaves/`);
+              }}
+            />
             <InformationWidget
               infotitle="Upcoming Holiday"
               info={
