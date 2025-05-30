@@ -32,6 +32,10 @@ const UserAttendance = () => {
     fetchAttendanceLogs();
   }, []);
 
+  const onEditModelClose = () =>{
+    setEditingLog(null)
+    fetchAttendanceLogs();
+  }
   return (
     <div className="attendance-container">
       <h2 className="attendance-header">Employee Attendance</h2>
@@ -74,7 +78,7 @@ const UserAttendance = () => {
         {editingLog && (
           <EditAttendanceModal
             log={editingLog}
-            onClose={() => setEditingLog(null)}
+            onClose={onEditModelClose}
           />
         )}
       </Suspense>
