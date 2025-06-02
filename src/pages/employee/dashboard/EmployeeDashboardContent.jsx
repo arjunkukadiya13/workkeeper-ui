@@ -11,12 +11,14 @@ import "./EmployeeDashboardContent.css";
 import LeaveService from "../../../services/leaveService";
 import AttendanceService from "../../../services/attendanceService";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const EmployeeDashboardContent = () => {
   const [holidays, setHoliday] = useState([]);
   const [attendanceLog, setAttendanceLog] = useState([]);
   const [presenceInfo, setPresenceInfo] = useState("Loading...");
   const userData = useSelector((state) => state.userData);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,7 +90,9 @@ const EmployeeDashboardContent = () => {
               }
               Icon={CalendarDays}
             />
-            <InformationWidget infotitle="Your Team" info="Arjun (Lead), Karan, Gopal" Icon={Users} />
+            <InformationWidget infotitle="Your Team" info={userData.teamName} Icon={Users} 
+              onClick={()=>{navigate("/employee/team")}}
+            />
             <InformationWidget infotitle="Your Presence" info={presenceInfo} Icon={Clock} />
             <InformationWidget infotitle="Quick Info" info={`Manager: Alice, ID: ${userData.id}`} Icon={Info} />
           </div>

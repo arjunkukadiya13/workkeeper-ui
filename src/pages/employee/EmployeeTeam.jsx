@@ -1,7 +1,7 @@
 import React, { lazy,Suspense } from "react";
 
 const Header = lazy(() => import("../../components/Header"));
-const EmployeeAttendanceContent = lazy(() => import("./attendance/EmployeeAttendanceContent"));
+const EmployeeTeamContent = lazy(() => import("./your-team/EmployeeTeamContent"));
 const SideBar = lazy(() => import("../../components/EmployeeSIdeBar"));
 
 const EmployeeTeam = () => {
@@ -12,7 +12,7 @@ const EmployeeTeam = () => {
           <div className="main-layout">
               <SideBar />
                 <div className="content">
-                  <EmployeeAttendanceContent/>
+                  <EmployeeTeamContent/>
                 </div>
           </div>
       </div>
