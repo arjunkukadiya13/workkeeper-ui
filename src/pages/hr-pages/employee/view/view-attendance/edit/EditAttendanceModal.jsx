@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./EditAttendanceModal.css";
 import { useSelector } from "react-redux";
 import AttendanceService from "../../../../../../services/attendanceService";
+import NotificationService from "../../../../../../services/notificationService";
 
 const EditAttendanceModal = ({ log, onClose }) => {
   const userData = useSelector((state) => state.userData);
-
+  
   const [editedLog, setEditedLog] = useState({
     id: 0,
     date: "",
@@ -20,7 +21,7 @@ const EditAttendanceModal = ({ log, onClose }) => {
       setEditedLog({
         id: log.id,
         date: log.date,
-        time: log.time?.substring(11, 16) || "", 
+        time: log.time?.substring(11, 16) || "",
         type: log.type,
         employeeId: userData.id,
         source: log.source
@@ -50,6 +51,15 @@ const EditAttendanceModal = ({ log, onClose }) => {
       };
 
       await AttendanceService.updateAttendance(payload.id, payload);
+      const notificationPayload = {
+        employeeId: editedLog.employeeId,
+        message: `Your attendance log on ${editedLog.date} has been updated to '${editedLog.type}' at ${editedLog.time}.`,
+        messageType: "Attendance Update",
+        sentFrom: userData.id,
+        isRead: false,
+      };
+      
+      await NotificationService.newLeaveNotification(notificationPayload);
       onClose();
     } catch (error) {
       console.error("Failed to update attendance log:", error);

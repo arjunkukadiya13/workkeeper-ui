@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import AttendanceService from "../../../../services/attendanceService";
 import "./TodaysPresencePageContent.css";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const TodaysPresencePageContent = () => {
   const [employees, setEmployees] = useState([]);
-
+  const navigate = useNavigate()
   const fetchTodaysPresence = async () => {
     try {
       const data = await AttendanceService.todaysPresentEmployees("2025-05-29");
@@ -20,6 +22,11 @@ const TodaysPresencePageContent = () => {
 
   return (
     <div className="todays-presence-container">
+      <Button
+        onClick={() => { navigate(-1) }}
+      >
+        Back
+      </Button>
       <h2>Today's Employee Presence</h2>
       <table className="presence-table">
         <thead>
@@ -45,8 +52,8 @@ const TodaysPresencePageContent = () => {
                 {emp.isPresent && emp.hasMultipleCheckIns
                   ? "Multiple check-ins"
                   : emp.isAbsent
-                  ? "Absent"
-                  : ""}
+                    ? "Absent"
+                    : ""}
               </td>
             </tr>
           ))}
