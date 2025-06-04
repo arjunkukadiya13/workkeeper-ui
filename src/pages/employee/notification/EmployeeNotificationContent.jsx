@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react';
 import "./EmployeeNotificationContent.css";
 import { useSelector } from 'react-redux';
 import NotificationService from '../../../services/notificationService';
-import { Card, CardContent, Typography, Button, Divider, Box } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Divider,
+  Box
+} from '@mui/material';
 
 const EmployeeNotificationContent = () => {
   const userData = useSelector((state) => state.userData);
@@ -25,6 +32,10 @@ const EmployeeNotificationContent = () => {
   useEffect(() => {
     if (userData?.id) fetchNotifications();
   }, [page, userData]);
+
+  const handleMarkAsRead = async (id) => {
+    
+  };
 
   const handlePrev = () => {
     if (page > 1) setPage(page - 1);
@@ -52,6 +63,16 @@ const EmployeeNotificationContent = () => {
               <Typography variant="body2" color="textSecondary">
                 Sent at: {new Date(notif.sentAt).toLocaleString()}
               </Typography>
+              {!notif.isRead && (
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => handleMarkAsRead(notif.id)}
+                  className="mark-as-read-button"
+                >
+                  Mark as Read
+                </Button>
+              )}
             </CardContent>
           </Card>
         ))

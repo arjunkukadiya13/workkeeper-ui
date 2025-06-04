@@ -49,3 +49,13 @@
   padding: 2rem 0;
   color: #888;
 }
+.mark-as-read-button {
+  margin-top: 8px;
+  color: #1976d2;
+}
+.notification-card.unread {
+  background-color: #f0f8ff;
+}
+.notification-card.read {
+  background-color: #f9f9f9;
+}
