@@ -89,7 +89,9 @@ const LoginPage = () => {
         </Button>
 
         <div className="login-links">
-          <a href="/forgot-password" className="forgot-password">Forgot Password?</a>
+          <a href="/forgot-password" className="forgot-password"
+            onClick={()=>{navigate("/forgot-password")}}
+          >Forgot Password?</a>
         </div>
       </Card>
     </div>
