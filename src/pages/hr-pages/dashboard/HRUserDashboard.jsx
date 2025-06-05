@@ -18,10 +18,11 @@ const HRUserDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+      const today = new Date().toISOString().split("T")[0]; 
       const holidays = await LeaveService.getUpcomingHoliday(today);
       const logs = await AttendanceService.getLastAttendanceLog(userData.id);
-      const leavesData = await LeaveService.getTodaysOnLeaveEmployee("2025-5-22");
+      const leavesData = await LeaveService.getTodaysOnLeaveEmployee(today);
+      setHoliday(holidays)
       setTodayLeaveCount(leavesData.length);
       dispatch(setTodayLeaveData(leavesData));
       const todayLogs = logs.filter((log) => log.date === today);

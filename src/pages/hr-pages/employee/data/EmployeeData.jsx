@@ -46,6 +46,7 @@ const EmployeeData = () => {
     try {
       const data = await EmployeeService.getEmployeesPaginated(page, rowsPerPage);
       setEmployees(data.employees);
+      // console.log(data.employees);
       setTotalCount(data.totalCount);
     } catch (error) {
       console.error("Failed to fetch employees", error);
