@@ -33,9 +33,28 @@ const EmployeeNotificationContent = () => {
     if (userData?.id) fetchNotifications();
   }, [page, userData]);
 
-  const handleMarkAsRead = async (id) => {
-    
-  };
+ const handleMarkAsRead = async (id) => {
+  try {
+    const notificationToUpdate = notifications.find((notif) => notif.id === id);
+
+    if (!notificationToUpdate) {
+      console.warn("Notification not found");
+      return;
+    }
+
+    const updatedNotificationPayload = {
+      ...notificationToUpdate,
+      isRead: true,
+      readAt: new Date().toISOString()
+    };
+
+    await NotificationService.markNotificationAsRead(id, updatedNotificationPayload);
+    fetchNotifications();
+  } catch (error) {
+    console.error("Failed to mark as read", error);
+  }
+};
+
 
   const handlePrev = () => {
     if (page > 1) setPage(page - 1);
@@ -57,22 +76,26 @@ const EmployeeNotificationContent = () => {
         notifications.map((notif) => (
           <Card key={notif.id} className={`notification-card ${notif.isRead ? 'read' : 'unread'}`}>
             <CardContent>
-              <Typography variant="body1" className="notification-message">
-                {notif.message}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Sent at: {new Date(notif.sentAt).toLocaleString()}
-              </Typography>
-              {!notif.isRead && (
-                <Button
-                  variant="text"
-                  size="small"
-                  onClick={() => handleMarkAsRead(notif.id)}
-                  className="mark-as-read-button"
-                >
-                  Mark as Read
-                </Button>
-              )}
+              <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap">
+                <Box>
+                  <Typography variant="body1" className="notification-message">
+                    {notif.message}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Sent at: {new Date(notif.sentAt).toLocaleString()}
+                  </Typography>
+                </Box>
+                {!notif.isRead && (
+                  <Button
+                    variant="text"
+                    size="small"
+                    onClick={() => handleMarkAsRead(notif.id)}
+                    className="mark-as-read-button"
+                  >
+                    Mark as Read
+                  </Button>
+                )}
+              </Box>
             </CardContent>
           </Card>
         ))

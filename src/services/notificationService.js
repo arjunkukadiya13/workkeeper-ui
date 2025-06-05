@@ -11,6 +11,10 @@ class NotificationService{
         });
         return response.data;
     }
+    static async markNotificationAsRead(id,data){
+        const response = await httpClient.put(`/Notification/${id}`,data);
+        return response.data;
+    }
 
 }
 
