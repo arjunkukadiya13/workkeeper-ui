@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./ResetPasswordPage.css";
 import "./LoginPage.css"
 
-const ResetPasswordPage = () => {
+const ResetPasswordPage = ({isFirstLogin=false}) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");

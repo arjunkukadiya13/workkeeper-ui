@@ -38,6 +38,7 @@ const AppRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+        <Route path="/create-new-password" element={<ResetPasswordPage />} />
 
         {/* HR routes (protected) */}
         <Route path="/hr/dashboard" element={<AuthContext><Dashboard /></AuthContext>} />

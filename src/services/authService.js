@@ -27,6 +27,9 @@ class AuthService{
       throw error;
     }
   }
+  static async passwordUpdate(email,newPassword){
+      const response = await httpClient.post("/")
+  }
 }
 
 

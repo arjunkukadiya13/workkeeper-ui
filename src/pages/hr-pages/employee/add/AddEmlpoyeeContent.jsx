@@ -107,6 +107,7 @@ const AddEmployeeContent = () => {
 
     try {
       await EmployeeService.addEmployee(formattedData);
+      
       setSuccessMessage("Employee added successfully!");
       resetForm();
       setTimeout(() => setSuccessMessage(""), 3000);
