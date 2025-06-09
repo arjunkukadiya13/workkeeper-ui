@@ -27,8 +27,13 @@ class AuthService{
       throw error;
     }
   }
-  static async passwordUpdate(email,newPassword){
-      const response = await httpClient.post("/")
+  static async passwordUpdate(token, data) {
+    const response = await httpClient.post("/auth/change-password", data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
   }
 }
 

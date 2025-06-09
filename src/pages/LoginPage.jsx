@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { userLogin } from "../data/userData/loginSlice";
 import { setUserData } from "../data/userData/userSlice";
 import { setAuthToken } from "../data/userData/authTokenSlice";
+import { setLoginId } from "../data/userData/loginIdSlice";
 import EmployeeService from "../services/employeeService";
 
 const LoginPage = () => {
@@ -28,7 +29,8 @@ const LoginPage = () => {
     const data = await AuthService.login(email, password);
     dispatch(userLogin());
     dispatch(setAuthToken(data.token));
-    if (data.isFirstLogin == true) {
+    dispatch(setLoginId(data.user.id));
+    if (data.user.isFirstLogin == true) {
       navigate("/create-new-password");
     } else {
       dispatch(setUserData(await EmployeeService.getEmployeeByEmail(email)))

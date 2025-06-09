@@ -5,6 +5,7 @@ const Dashboard = lazy(() => import("./pages/hr-pages/HRDashboard"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
+const PasswordResetSuccessPage = lazy(() => import("./pages/PasswordResetSuccessPage"));
 const AttendancePage = lazy(() => import("./pages/hr-pages/AttendancePage"));
 const TodaysPresence = lazy(() => import("./pages/hr-pages/attendance/TodaysPresence"));
 const Employee = lazy(() => import("./pages/hr-pages/Employee"));
@@ -38,7 +39,8 @@ const AppRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-        <Route path="/create-new-password" element={<ResetPasswordPage />} />
+        <Route path="/create-new-password" element={<ResetPasswordPage isFirstLogin={true}/>} />
+        <Route path="/password-reset-success" element={<PasswordResetSuccessPage />} />
 
         {/* HR routes (protected) */}
         <Route path="/hr/dashboard" element={<AuthContext><Dashboard /></AuthContext>} />
