@@ -10,7 +10,7 @@ const PublicRoutes = [
     <Route path="/" element={<LoginPage />} />,
     <Route path="/login" element={<LoginPage />} />,
     <Route path="/forgot-password" element={<ForgotPasswordPage />} />,
-    <Route path="/reset-password/:token" element={<ResetPasswordPage />} />,
+    <Route path="/reset-password" element={<ResetPasswordPage />} />,
     <Route path="/create-new-password" element={<ResetPasswordPage isFirstLogin={true} />} />,
     <Route path="/password-reset-success" element={<PasswordResetSuccessPage />} />
   ];

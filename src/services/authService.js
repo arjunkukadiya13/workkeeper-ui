@@ -1,8 +1,8 @@
 // import axios from "axios";
 import httpClient from "./httpClient";
 
-class AuthService{
-  static async login(email,password){
+class AuthService {
+  static async login(email, password) {
     try {
       const response = await httpClient.post("/auth/login", { email, password });
       return response.data;
@@ -10,7 +10,7 @@ class AuthService{
       throw error;
     }
   }
-  static async validateToken(token){
+  static async validateToken(token) {
     try {
       const response = await httpClient.post(
         "/auth/validatetoken",
@@ -21,7 +21,7 @@ class AuthService{
           },
         }
       );
-      return response.status; 
+      return response.status;
     } catch (error) {
       console.error("Token validation failed:", error.response?.data || error.message);
       throw error;
@@ -35,6 +35,17 @@ class AuthService{
     });
     return response.data;
   }
+  static async forgotPasswordRequest(email) {
+    const response = await httpClient.post("/PasswordReset/request", {
+      email: email,
+    });
+    return response.data;
+  }
+  static async resetPassword(data){
+    const response = await httpClient.post("/PasswordReset/reset",data);
+    return response.data;
+  }
+
 }
 
 

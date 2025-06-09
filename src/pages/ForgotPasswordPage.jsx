@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import "./LoginPage.css"
+import AuthService from "../services/authService";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState(null); 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    await AuthService.forgotPasswordRequest(email);
     setMessage(`Password reset link sent to ${email}`);
   };
 

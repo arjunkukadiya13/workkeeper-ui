@@ -3,9 +3,14 @@ import "./ResetPasswordPage.css";
 import "./LoginPage.css";
 import { useSelector } from "react-redux";
 import AuthService from "../services/authService";
-import { IconButton, InputAdornment } from "@mui/material";
+import {
+  TextField,
+  IconButton,
+  InputAdornment,
+  Button,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const ResetPasswordPage = ({ isFirstLogin = false }) => {
   const [password, setPassword] = useState("");
@@ -15,7 +20,9 @@ const ResetPasswordPage = ({ isFirstLogin = false }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
-
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
+  const email = searchParams.get("email");
   const authToken = useSelector((state) => state.authToken);
   const loginId = useSelector((state) => state.loginId);
 
@@ -43,15 +50,39 @@ const ResetPasswordPage = ({ isFirstLogin = false }) => {
       } catch (err) {
         console.error(err);
         setError(
-          err.response?.data?.message || "Password reset failed. Please try again."
+          err.response?.data?.message ||
+          "Password reset failed. Please try again."
         );
       }
     } else {
-      setSuccess("Password reset successful!");
-      setPassword("");
-      setConfirmPassword("");
+      try {
+        const data = {
+          email: email,
+          token: token,
+          newPassword: password,
+        };
+        console.log(data)
+        const res = await AuthService.resetPassword(data);
+        setSuccess(res.message || "Password reset successful!");
+        setPassword("");
+        setConfirmPassword("");
+        navigate("/password-reset-success");
+      } catch (err) {
+        console.error(err);
+        setError(
+          err.response?.data?.message ||
+          "Password reset failed. Please try again."
+        );
+      }
     }
   };
+
+  useEffect(() => {
+    if (!isFirstLogin) {
+      console.log("Token from URL:", token);
+      console.log("Email from URL:", email);
+    }
+  }, [isFirstLogin, token, email]);
 
   return (
     <div className="login-container">
@@ -60,45 +91,59 @@ const ResetPasswordPage = ({ isFirstLogin = false }) => {
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}
         <form onSubmit={handleSubmit} className="reset-password-form">
-          <div className="input-wrapper">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="New Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="input-field"
-            />
-            <IconButton
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="eye-button"
-              size="small"
-            >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </div>
+          <TextField
+            type={showPassword ? "text" : "password"}
+            label="New Password"
+            variant="outlined"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
 
-          <div className="input-wrapper">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className="input-field"
-            />
-            <IconButton
-              onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="eye-button"
-              size="small"
-            >
-              {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </div>
+          <TextField
+            type={showConfirmPassword ? "text" : "password"}
+            label="Confirm Password"
+            variant="outlined"
+            fullWidth
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
 
-          <button type="submit" className="login-button">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            className="login-button"
+          >
             Reset Password
-          </button>
+          </Button>
         </form>
       </div>
     </div>
