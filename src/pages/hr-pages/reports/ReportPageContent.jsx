@@ -4,6 +4,8 @@ import ReportSelector from "./ReportSelector";
 import ReportFilters from "./ReportFilters";
 import ReportTable from "./ReportTable";
 import ReportService from "../../../services/reportService";
+import { exportToCSV, exportToPDF } from "../../../data/reportExports";
+import { reportTypes } from "./reportTypes";
 
 function ReportPageContent() {
   const [reportType, setReportType] = useState("");
@@ -14,6 +16,7 @@ function ReportPageContent() {
     teamPresence: "dailyTeamPresence",
     attendance: "attendanceTrends",
   };
+
   const handleGenerateReport = async () => {
     const functionName = functionMap[reportType];
     if (!functionName || typeof ReportService[functionName] !== "function") {
@@ -29,8 +32,23 @@ function ReportPageContent() {
     }
   };
   const handleExport = (type) => {
-    alert(`Exporting ${type.toUpperCase()} (simulated)`);
+    const config = reportTypes[reportType];
+    if (!config || !config.keys) {
+      alert("Invalid report configuration");
+      return;
+    }
+
+    const fileName = `${reportType}_report_${startDate}_to_${endDate}`;
+
+    if (type === "csv") {
+      exportToCSV(reportData, config.keys, fileName);
+    } else if (type === "pdf") {
+      exportToPDF(reportData, config.keys, fileName);
+    } else {
+      alert("Unsupported export type");
+    }
   };
+
 
   return (
     <Box sx={{ p: 4 }}>
