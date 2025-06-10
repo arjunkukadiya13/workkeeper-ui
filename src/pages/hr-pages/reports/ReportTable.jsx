@@ -1,11 +1,14 @@
 import React from "react";
 import { Paper, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { reportTypes } from "./reportTypes";
+import "./ReportTable.css"
 
 const ReportTable = ({ reportType, reportData }) => {
   if (!reportType || reportData.length === 0) return null;
 
-  const columns = reportTypes[reportType]?.columns || [];
+  const config = reportTypes[reportType];
+  const columns = config?.columns || [];
+  const keys = config?.keys || [];
 
   return (
     <Paper sx={{ mb: 2, p: 2 }}>
@@ -20,8 +23,8 @@ const ReportTable = ({ reportType, reportData }) => {
         <TableBody>
           {reportData.map((row, i) => (
             <TableRow key={i}>
-              {columns.map((col, j) => (
-                <TableCell key={j}>{row[col.replace(/\s/g, "").toLowerCase()] || "-"}</TableCell>
+              {keys.map((key, j) => (
+                <TableCell key={j}>{row[key] !== undefined ? row[key] : "-"}</TableCell>
               ))}
             </TableRow>
           ))}

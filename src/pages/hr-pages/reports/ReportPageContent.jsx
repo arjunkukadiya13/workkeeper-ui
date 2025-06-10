@@ -3,17 +3,31 @@ import { Box, Button, Typography } from "@mui/material";
 import ReportSelector from "./ReportSelector";
 import ReportFilters from "./ReportFilters";
 import ReportTable from "./ReportTable";
+import ReportService from "../../../services/reportService";
 
 function ReportPageContent() {
   const [reportType, setReportType] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reportData, setReportData] = useState([]);
-
-  const handleGenerateReport = () => {
-    setReportData([]); 
+  const functionMap = {
+    teamPresence: "dailyTeamPresence",
+    attendance: "attendanceTrends",
   };
+  const handleGenerateReport = async () => {
+    const functionName = functionMap[reportType];
+    if (!functionName || typeof ReportService[functionName] !== "function") {
+      console.error("Invalid or undefined report function");
+      return;
+    }
 
+    try {
+      const data = await ReportService[functionName]("2025-06-06", "2025-06-10");
+      setReportData(data);
+    } catch (err) {
+      console.error("Failed to fetch report:", err);
+    }
+  };
   const handleExport = (type) => {
     alert(`Exporting ${type.toUpperCase()} (simulated)`);
   };
