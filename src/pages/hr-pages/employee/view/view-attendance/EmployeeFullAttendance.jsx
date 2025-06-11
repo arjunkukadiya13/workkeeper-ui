@@ -20,21 +20,13 @@ const EmployeeAttendanceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
-  const fetchPaginatedAttendanceLogs = async (page = 1) => {
-
-    try {
-      const response = await AttendanceService.getUserAttendancePaginate(10, page);
+  const fetchPaginatedAttendanceLogs = async (page = 1) => { 
+    const response = await AttendanceService.getUserAttendancePaginate(employeeId, page, 5);
       const pages = Number.isInteger(response?.totalPages) ? response.totalPages : 1;
-
-      setAttendanceLogs(response);
+      setAttendanceLogs(response.data);
       setTotalPages(pages);
       setCurrentPage(page);
-    } catch (error) {
-      console.error("Error fetching paginated attendance logs:", error);
-      setAttendanceLogs([]);
-      setTotalPages(1);
-      setCurrentPage(1);
-    }
+    
   };
   
   const fetchUserData = async () =>{
