@@ -29,7 +29,6 @@ class EmployeeService {
   static async addEmployee(data) {
     try {
       const response = await httpClient.post("/Employee", data);
-      console.log(response);
     } catch (error) {
       throw error;
     }

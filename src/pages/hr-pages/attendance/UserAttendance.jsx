@@ -17,12 +17,15 @@ const UserAttendance = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [editingLog, setEditingLog] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchAttendanceLogs = async () => {
+  const fetchAttendanceLogs = async (pageNumber = 1) => {
     try {
-      const logs = await AttendanceService.getUserAttendance(userData.id);
-      logs.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-      setAttendanceLogs(logs);
+      const response = await AttendanceService.getUserAttendancePaginate(userData.id, pageNumber,5);
+      setAttendanceLogs(response.data);
+      setTotalPages(response.totalPages);
+      setPage(pageNumber);
     } catch (error) {
       console.error("Error fetching attendance logs:", error);
     }
@@ -32,24 +35,25 @@ const UserAttendance = () => {
     fetchAttendanceLogs();
   }, []);
 
-  const onEditModelClose = () =>{
-    setEditingLog(null)
-    fetchAttendanceLogs();
-  }
+  const onEditModelClose = () => {
+    setEditingLog(null);
+    fetchAttendanceLogs(page); // maintain current page
+  };
+
   return (
     <div className="attendance-container">
       <h2 className="attendance-header">Employee Attendance</h2>
 
       {/* Employee Details */}
       <Suspense fallback={<div>Loading Employee Info...</div>}>
-        <EmployeeInformationWidget userData={userData}/>
+        <EmployeeInformationWidget userData={userData} />
       </Suspense>
 
       {/* Add Attendance Form */}
       <Suspense fallback={<div>Loading Add Form...</div>}>
         <AddAttendanceForm
           attendanceLogs={attendanceLogs}
-          refreshAttendanceLogs={fetchAttendanceLogs}
+          refreshAttendanceLogs={() => fetchAttendanceLogs(page)}
         />
       </Suspense>
 
@@ -70,6 +74,9 @@ const UserAttendance = () => {
         <AttendanceLogDataPage
           attendanceLogs={attendanceLogs}
           onEdit={setEditingLog}
+          page={page}
+          totalPages={totalPages}
+          onPageChange={fetchAttendanceLogs}
         />
       </Suspense>
 
