@@ -32,7 +32,7 @@ export const reportTypes = {
   earlyLeavers: {
     label: "Early Leavers Report",
     columns: ["Employee", "Date", "Out Time", "Left Early By"],
-    keys: ["employeeName", "date", "outTime", "leftEarlyBy"],
+    keys: ["name", "date", "outTime", "leftEarlyBy"],
   },
   teamPresence: {
     label: "Team Daily Presence",

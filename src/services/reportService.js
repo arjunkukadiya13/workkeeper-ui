@@ -22,5 +22,14 @@ class ReportService{
         })
         return response.data;
     }
+    static async getEarlyLeavers(startDate,endDate){
+        const response = await httpClient.get("/Report/early-leavers",{
+            params:{
+                startDate,
+                endDate
+            }
+        })
+        return response.data;
+    }
 }
 export default ReportService;

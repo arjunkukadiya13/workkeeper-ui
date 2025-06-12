@@ -15,6 +15,7 @@ function ReportPageContent() {
   const functionMap = {
     teamPresence: "dailyTeamPresence",
     attendance: "attendanceTrends",
+    earlyLeavers: "getEarlyLeavers",
   };
 
   const handleGenerateReport = async () => {
@@ -25,7 +26,7 @@ function ReportPageContent() {
     }
 
     try {
-      const data = await ReportService[functionName]("2025-06-06", "2025-06-10");
+      const data = await ReportService[functionName]("2025-06-06", "2025-06-11");
       setReportData(data);
     } catch (err) {
       console.error("Failed to fetch report:", err);
