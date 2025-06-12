@@ -1,18 +1,15 @@
 import React from "react";
-import { FormControl, InputLabel, Select, MenuItem, Grid } from "@mui/material";
+import { Grid, TextField, Autocomplete } from "@mui/material";
 
-const EmployeeSelectField = ({ label, name, value, onChange, options, xs = 4 }) => (
+const EmployeeSelectField = ({ xs = 4, label, options, value, getOptionLabel, onChange }) => (
   <Grid item xs={xs}>
-    <FormControl fullWidth>
-      <InputLabel>{label}</InputLabel>
-      <Select name={name} value={value} onChange={onChange}>
-        {options.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <Autocomplete
+      options={options}
+      getOptionLabel={getOptionLabel}
+      value={value}
+      onChange={(e, newValue) => onChange(newValue)}
+      renderInput={(params) => <TextField {...params} label={label} fullWidth required />}
+    />
   </Grid>
 );
 

@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Grid, Autocomplete, Alert } from "@mui/material";
+import { Button, Alert, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import "./AddEmployeeContent.css";
+
 import DepartmentService from "../../../../services/departmentService";
 import RoleServices from "../../../../services/roleServices";
 import EmployeeService from "../../../../services/employeeService";
 import OfficeServices from "../../../../services/officeServices";
 import TeamServices from "../../../../services/teamServices";
 import ShiftService from "../../../../services/shiftService";
+
+import EmployeeFormField from "../components/EmployeeFormField";
+import EmployeeSelectField from "../components/EmployeeSelectField";
+import EmployeeDropdownField from "../components/EmployeeDropdownField";
 
 const AddEmployeeContent = () => {
   const [formData, setFormData] = useState({
@@ -36,7 +41,6 @@ const AddEmployeeContent = () => {
   const [offices, setOffices] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [reportingManagers, setReportingManagers] = useState([]);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,10 +49,9 @@ const AddEmployeeContent = () => {
         setDepartments(await DepartmentService.getDepartment());
         setRoles(await RoleServices.getRoles());
         setTeams(await TeamServices.getTeams());
-        setReportingManagers(await EmployeeService.getEmployee());
         setOffices(await OfficeServices.getOffices());
-        const shiftData = await ShiftService.getShifts();
-        setShifts(shiftData);
+        setReportingManagers(await EmployeeService.getEmployee());
+        setShifts(await ShiftService.getShifts());
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -107,12 +110,11 @@ const AddEmployeeContent = () => {
 
     try {
       await EmployeeService.addEmployee(formattedData);
-      
       setSuccessMessage("Employee added successfully!");
       resetForm();
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
-      console.error("Error adding employee:", error);
+      console.error("Error adding employee:");
     }
   };
 
@@ -133,118 +135,72 @@ const AddEmployeeContent = () => {
 
         <form onSubmit={handleSubmit} className="employee-form">
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField label="Employee Name" name="name" value={formData.name} fullWidth required onChange={handleChange} />
-            </Grid>
+            <EmployeeFormField label="Employee Name" name="name" value={formData.name} onChange={handleChange} xs={12} />
+            <EmployeeFormField label="Personal Email" name="personalEmail" type="email" value={formData.personalEmail} onChange={handleChange} />
+            <EmployeeFormField label="Organizational Email" name="organizationalEmail" type="email" value={formData.organizationalEmail} onChange={handleChange} />
+            <EmployeeFormField label="Personal Mobile" name="personalMobile" type="tel" value={formData.personalMobile} onChange={handleChange} />
+            <EmployeeFormField label="Alternate Mobile" name="alternateMobile" type="tel" value={formData.alternateMobile} onChange={handleChange} required={false} />
 
-            <Grid item xs={4}>
-              <TextField label="Personal Email" name="personalEmail" type="email" value={formData.personalEmail} fullWidth required onChange={handleChange} />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField label="Organizational Email" name="organizationalEmail" type="email" value={formData.organizationalEmail} fullWidth required onChange={handleChange} />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField label="Personal Mobile" name="personalMobile" type="tel" value={formData.personalMobile} fullWidth required onChange={handleChange} />
-            </Grid>
+            <EmployeeSelectField
+              label="Department"
+              options={departments}
+              value={departments.find((d) => d.id === formData.departmentId) || null}
+              getOptionLabel={(option) => option.departmentName}
+              onChange={(val) => setFormData({ ...formData, departmentId: val?.id || "" })}
+            />
 
-            <Grid item xs={4}>
-              <TextField label="Alternate Mobile" name="alternateMobile" type="tel" value={formData.alternateMobile} fullWidth onChange={handleChange} />
-            </Grid>
+            <EmployeeSelectField
+              label="Role"
+              options={roles}
+              value={roles.find((r) => r.id === formData.roleId) || null}
+              getOptionLabel={(option) => option.roleName}
+              onChange={(val) => setFormData({ ...formData, roleId: val?.id || "" })}
+            />
 
-            <Grid item xs={4}>
-              <Autocomplete
-                options={departments}
-                getOptionLabel={(option) => option.departmentName}
-                onChange={(e, newValue) => setFormData({ ...formData, departmentId: newValue?.id || "" })}
-                value={departments.find((d) => d.id === formData.departmentId) || null}
-                renderInput={(params) => <TextField {...params} label="Department" fullWidth required />}
-              />
-            </Grid>
+            <EmployeeSelectField
+              label="Office"
+              options={offices}
+              value={offices.find((o) => o.id === formData.officeId) || null}
+              getOptionLabel={(option) => option.location || "No Location"}
+              onChange={(val) => setFormData({ ...formData, officeId: val?.id || "" })}
+            />
 
-            <Grid item xs={4}>
-              <Autocomplete
-                options={roles}
-                getOptionLabel={(option) => option.roleName}
-                onChange={(e, newValue) => setFormData({ ...formData, roleId: newValue?.id || "" })}
-                value={roles.find((r) => r.id === formData.roleId) || null}
-                renderInput={(params) => <TextField {...params} label="Role" fullWidth required />}
-              />
-            </Grid>
+            <EmployeeSelectField
+              label="Team"
+              options={teams}
+              value={teams.find((t) => t.id === formData.teamId) || null}
+              getOptionLabel={(option) => option.teamName}
+              onChange={(val) => setFormData({ ...formData, teamId: val?.id || "" })}
+            />
 
-            <Grid item xs={4}>
-              <Autocomplete
-                options={offices}
-                getOptionLabel={(option) => option?.location || "No Location"}
-                onChange={(e, newValue) => setFormData({ ...formData, officeId: newValue?.id || "" })}
-                value={offices.find((o) => o.id === formData.officeId) || null}
-                renderInput={(params) => <TextField {...params} label="Office" fullWidth required />}
-              />
-            </Grid>
+            <EmployeeSelectField
+              label="Reporting Manager"
+              options={reportingManagers}
+              value={reportingManagers.find((e) => e.id === formData.reportingEmployeeId) || null}
+              getOptionLabel={(option) => option.name}
+              onChange={(val) => setFormData({ ...formData, reportingEmployeeId: val?.id || "" })}
+            />
 
-            <Grid item xs={4}>
-              <Autocomplete
-                options={teams}
-                getOptionLabel={(option) => option.teamName}
-                onChange={(e, newValue) => setFormData({ ...formData, teamId: newValue?.id || "" })}
-                value={teams.find((t) => t.id === formData.teamId) || null}
-                renderInput={(params) => <TextField {...params} label="Team" fullWidth required />}
-              />
-            </Grid>
+            <EmployeeFormField label="Line Manager" name="lineManager" value={formData.lineManager} onChange={handleChange} />
+            <EmployeeFormField label="Designation" name="designation" value={formData.designation} onChange={handleChange} />
+            <EmployeeFormField label="Experience (Years)" name="yearOfExpTotal" type="number" value={formData.yearOfExpTotal} onChange={handleChange} />
+            <EmployeeFormField label="Experience with Organization" name="yearOfExpOrganization" type="number" value={formData.yearOfExpOrganization} onChange={handleChange} />
 
-            <Grid item xs={4}>
-              <Autocomplete
-                options={reportingManagers}
-                getOptionLabel={(option) => option.name}
-                onChange={(e, newValue) => setFormData({ ...formData, reportingEmployeeId: newValue?.id || "" })}
-                value={reportingManagers.find((e) => e.id === formData.reportingEmployeeId) || null}
-                renderInput={(params) => <TextField {...params} label="Reporting Manager" fullWidth required />}
-              />
-            </Grid>
+            <EmployeeDropdownField
+              label="Status"
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              options={["Active", "Inactive"]}
+            />
 
-            <Grid item xs={4}>
-              <TextField label="Line Manager" name="lineManager" value={formData.lineManager} fullWidth required onChange={handleChange} />
-            </Grid>
-
-            <Grid item xs={4}>
-              <TextField label="Designation" name="designation" value={formData.designation} fullWidth required onChange={handleChange} />
-            </Grid>
-
-            <Grid item xs={4}>
-              <TextField label="Experience (Years)" name="yearOfExpTotal" type="number" value={formData.yearOfExpTotal} fullWidth required onChange={handleChange} />
-            </Grid>
-
-            {/* Final Row with 3 Fields */}
-            <Grid item xs={4}>
-              <TextField
-                label="Experience with Organization"
-                name="yearOfExpOrganization"
-                type="number"
-                value={formData.yearOfExpOrganization}
-                fullWidth
-                required
-                onChange={handleChange}
-              />
-            </Grid>
-
-            <Grid item xs={4}>
-              <FormControl fullWidth>
-                <InputLabel>Status</InputLabel>
-                <Select name="status" value={formData.status} onChange={handleChange}>
-                  <MenuItem value="Active">Active</MenuItem>
-                  <MenuItem value="Inactive">Inactive</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={4}>
-              <Autocomplete
-                options={shifts}
-                getOptionLabel={(option) => option.shiftName}
-                onChange={(e, newValue) => setFormData({ ...formData, shiftId: newValue?.id || "" })}
-                value={shifts.find((s) => s.id === formData.shiftId) || null}
-                renderInput={(params) => <TextField {...params} label="Shift" fullWidth required />}
-              />
-            </Grid>
+            <EmployeeSelectField
+              label="Shift"
+              options={shifts}
+              value={shifts.find((s) => s.id === formData.shiftId) || null}
+              getOptionLabel={(option) => option.shiftName}
+              onChange={(val) => setFormData({ ...formData, shiftId: val?.id || "" })}
+            />
           </Grid>
 
           <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>

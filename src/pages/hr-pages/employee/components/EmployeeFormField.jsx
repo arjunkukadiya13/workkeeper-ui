@@ -1,15 +1,15 @@
 import React from "react";
-import { TextField, Grid } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 
-const EmployeeFormField = ({ label, name, value, onChange, required = true, type = "text", xs = 4 }) => (
+const EmployeeFormField = ({ xs = 4, label, name, value, onChange, type = "text", required = true }) => (
   <Grid item xs={xs}>
     <TextField
       label={label}
       name={name}
       value={value}
-      type={type}
       onChange={onChange}
       fullWidth
+      type={type}
       required={required}
     />
   </Grid>
