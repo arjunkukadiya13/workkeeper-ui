@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 const SettingPageContent = () => {
   const userData = useSelector((state)=>state.userData)
-
+  
   return (
     <div className="settings-container">
       <Typography variant="h4" className="title"> Settings</Typography>

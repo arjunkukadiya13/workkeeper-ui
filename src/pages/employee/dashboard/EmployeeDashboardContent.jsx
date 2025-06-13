@@ -28,7 +28,7 @@ const EmployeeDashboardContent = () => {
       const logs = await AttendanceService.getLastAttendanceLog(userData.id);
       setAttendanceLog(logs);
 
-      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+      const today = new Date().toISOString().split("T")[0]; 
       const todayLogs = logs.filter(log => log.date === today);
 
       if (todayLogs.length === 0) {
@@ -80,7 +80,6 @@ const EmployeeDashboardContent = () => {
       <div className="container-border">
         <div className="dashboard-container">
           <div className="widget-row">
-            <InformationWidget infotitle="Today's Leave" info="Arjun, on leave" Icon={CalendarDays} />
             <InformationWidget
               infotitle="Upcoming Holiday"
               info={

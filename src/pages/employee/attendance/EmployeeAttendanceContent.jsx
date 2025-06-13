@@ -23,11 +23,10 @@ const EmployeeAttendanceContent = () => {
     if (!userData?.id) return;
 
     try {
-      const response = await AttendanceService.getUserAttendancePaginate(userData.id, page);
-
+      const response = await AttendanceService.getUserAttendancePaginate(userData.id, page,10);
       const pages = Number.isInteger(response?.totalPages) ? response.totalPages : 1;
 
-      setAttendanceLogs(response);
+      setAttendanceLogs(response.data);
       setTotalPages(pages);
       setCurrentPage(page);
     } catch (error) {
@@ -38,7 +37,6 @@ const EmployeeAttendanceContent = () => {
     }
   };
 
-  // Initial load and on userData.id change
   useEffect(() => {
     fetchPaginatedAttendanceLogs(1);
   }, [userData?.id]);
