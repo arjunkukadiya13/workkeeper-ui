@@ -15,6 +15,7 @@ const EmployeeAttendacnePage = lazy(() => import("../pages/hr-pages/employee/vie
 const EmployeeLeavesPage = lazy(() => import("../pages/hr-pages/employee/view/EmployeeLeavesPage"));
 const NotificationPage = lazy(() => import("../pages/hr-pages/NotificationPage"));
 const ReportPage = lazy(() => import("../pages/hr-pages/ReportsPage"));
+const MasterDataPage = lazy(() => import("../pages/hr-pages/MasterDataPage"));
 const SettingPage = lazy(() => import("../pages/hr-pages/SettingPage"));
 
 const HRRoutes = [ 
@@ -25,6 +26,7 @@ const HRRoutes = [
     <Route path="/hr/employee" element={<AuthContext><Employee /></AuthContext>} />,
     <Route path="/hr/leave-management" element={<AuthContext><LeaveManagementPage /></AuthContext>} />,
     <Route path="/hr/leave-management/todays-leaves" element={<AuthContext><TodaysLeavesPage /></AuthContext>} />,
+    <Route path="/hr/master-data" element={<AuthContext><MasterDataPage /></AuthContext>} />,
     <Route path="/hr/notification" element={<AuthContext><NotificationPage /></AuthContext>} />,
     <Route path="/hr/reports" element={<AuthContext><ReportPage /></AuthContext>} />,
     <Route path="/hr/settings" element={<AuthContext><SettingPage /></AuthContext>} />,

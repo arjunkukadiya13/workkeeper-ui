@@ -1,91 +1,43 @@
-import React, { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
-import ReportSelector from "./ReportSelector";
-import ReportFilters from "./ReportFilters";
-import ReportTable from "./TableData";
-import ReportService from "../../../services/reportService";
-import { exportToCSV, exportToPDF } from "../../../data/reportExports";
-import { reportTypes } from "./reportTypes";
+import React, { useState, useEffect } from "react";
+import { Box, Typography } from "@mui/material";
+import TableSelector from "./TableSelector";
+import TableData from "./TableData";
+import { dataTables } from "./dataTables";
 
 function TablePageContent() {
-  const [reportType, setReportType] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [reportData, setReportData] = useState([]);
-  const functionMap = {
-    teamPresence: "dailyTeamPresence",
-    attendance: "attendanceTrends",
-    earlyLeavers: "getEarlyLeavers",
-  };
+  const [selectedTable, setSelectedTable] = useState("");
+  const [tableData, setTableData] = useState([]);
 
-  const handleGenerateReport = async () => {
-    const functionName = functionMap[reportType];
-    if (!functionName || typeof ReportService[functionName] !== "function") {
-      console.error("Invalid or undefined report function");
-      return;
+  useEffect(() => {
+    if (selectedTable) {
+      const mockData = {
+        departments: [
+          { departmentName: "HR", departmentDescription: "Human Resources" },
+        ],
+        leaveType: [
+          { leaveName: "Sick Leave", noOfDays: 12, description: "Medical leave" },
+        ],
+        office: [
+          { officeName: "Main HQ", location: "Mumbai" },
+        ],
+        shift: [
+          { shiftName: "Morning", startTime: "09:00", breakDuration: "01:00", endTime: "17:00" },
+        ],
+      };
+
+      setTableData(mockData[selectedTable] || []);
     }
-
-    try {
-      const data = await ReportService[functionName]("2025-06-06", "2025-06-11");
-      setReportData(data);
-    } catch (err) {
-      console.error("Failed to fetch report:", err);
-    }
-  };
-  const handleExport = (type) => {
-    const config = reportTypes[reportType];
-    if (!config || !config.keys) {
-      alert("Invalid report configuration");
-      return;
-    }
-
-    const fileName = `${reportType}_report_${startDate}_to_${endDate}`;
-
-    if (type === "csv") {
-      exportToCSV(reportData, config.keys, fileName);
-    } else if (type === "pdf") {
-      exportToPDF(reportData, config.keys, fileName);
-    } else {
-      alert("Unsupported export type");
-    }
-  };
-
+  }, [selectedTable]);
 
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Reports
+        Master Data Management
       </Typography>
 
-      <ReportSelector reportType={reportType} setReportType={setReportType} />
-      <ReportFilters
-        startDate={startDate}
-        endDate={endDate}
-        setStartDate={setStartDate}
-        setEndDate={setEndDate}
-      />
+      <TableSelector reportType={selectedTable} setReportType={setSelectedTable} />
 
-      <Button
-        variant="contained"
-        onClick={handleGenerateReport}
-        disabled={!reportType || !startDate || !endDate}
-        sx={{ mb: 3 }}
-      >
-        Generate Report
-      </Button>
-
-      <ReportTable reportType={reportType} reportData={reportData} />
-
-      {reportData.length > 0 && (
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <Button variant="outlined" onClick={() => handleExport("csv")}>
-            Export CSV
-          </Button>
-          <Button variant="outlined" onClick={() => handleExport("pdf")}>
-            Export PDF
-          </Button>
-        </Box>
-      )}
+      <TableData reportType={selectedTable} reportData={tableData} />
     </Box>
   );
 }

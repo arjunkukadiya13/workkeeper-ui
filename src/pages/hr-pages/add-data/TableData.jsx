@@ -1,12 +1,12 @@
 import React from "react";
 import { Paper, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import { reportTypes } from "./reportTypes";
+import { dataTables } from "./dataTables";
 import "./TableData.css"
 
 const TableData = ({ reportType, reportData }) => {
   if (!reportType || reportData.length === 0) return null;
 
-  const config = reportTypes[reportType];
+  const config = dataTables[reportType];
   const columns = config?.columns || [];
   const keys = config?.keys || [];
 

@@ -1,16 +1,16 @@
 import React from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { reportTypes } from "./reportTypes";
+import { dataTables } from "./dataTables";
 
 const TableSelector = ({ reportType, setReportType }) => (
   <FormControl fullWidth sx={{ mb: 2 }}>
-    <InputLabel>Select Report Type</InputLabel>
+    <InputLabel>Select Table</InputLabel>
     <Select
       value={reportType}
-      label="Select Report Type"
+      label="Select Table"
       onChange={(e) => setReportType(e.target.value)}
     >
-      {Object.entries(reportTypes).map(([key, value]) => (
+      {Object.entries(dataTables).map(([key, value]) => (
         <MenuItem key={key} value={key}>
           {value.label}
         </MenuItem>
