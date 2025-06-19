@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import AttendanceService from "../../../../services/attendanceService";
-import "./AddAttendanceForm.css"
+import "./AddAttendanceForm.css";
 
 const formatDate = (date) => date.toISOString().split("T")[0];
 const formatTime = (date) => date.toTimeString().slice(0, 5);
 
-const AddAttendanceForm = ({ attendanceLogs, refreshAttendanceLogs }) => {
+const AddAttendanceForm = ({ attendanceLogs, refreshAttendanceLogs, showSuccessMessage }) => {
   const userData = useSelector((state) => state.userData);
   const now = new Date();
 
@@ -29,31 +29,34 @@ const AddAttendanceForm = ({ attendanceLogs, refreshAttendanceLogs }) => {
   }, []);
 
   const handleAddAttendance = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!formData.date || !formData.time || !formData.type) {
-    alert("Please fill all fields!");
-    return;
-  }
+    if (!formData.date || !formData.time || !formData.type) {
+      alert("Please fill all fields!");
+      return;
+    }
 
-  const dateTime = new Date(`${formData.date}T${formData.time}:00`);
+    const dateTime = new Date(`${formData.date}T${formData.time}:00`);
 
-  const payload = {
-    employeeId: userData.id,
-    type: formData.type,
-    source: "Web",
-    time: dateTime.toISOString(), 
-    date: formData.date,
-    updatedAt: new Date().toISOString(),
+    const payload = {
+      employeeId: userData.id,
+      type: formData.type,
+      source: "Web",
+      time: dateTime.toISOString(),
+      date: formData.date,
+      updatedAt: new Date().toISOString(),
+    };
+
+    try {
+      await AttendanceService.addUserAttendance(payload);
+      await refreshAttendanceLogs();
+      if (showSuccessMessage) {
+        showSuccessMessage("Attendance log added successfully!");
+      }
+    } catch (error) {
+      console.error("Error adding attendance:", error);
+    }
   };
-
-  try {
-    await AttendanceService.addUserAttendance(payload);
-    await refreshAttendanceLogs();
-  } catch (error) {
-    console.error("Error adding attendance:", error);
-  }
-};
 
   return (
     <div className="add-attendance-form">

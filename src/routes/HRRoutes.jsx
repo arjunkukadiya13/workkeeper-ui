@@ -4,6 +4,7 @@ import AuthContext from "../AuthContext";
 
 const Dashboard = lazy(() => import("../pages/hr-pages/HRDashboard"));
 const AttendancePage = lazy(() => import("../pages/hr-pages/AttendancePage"));
+const AttendanceLogPage = lazy(() => import("../pages/hr-pages/AttendanceLogPage"));
 const TodaysPresence = lazy(() => import("../pages/hr-pages/attendance/TodaysPresence"));
 const Employee = lazy(() => import("../pages/hr-pages/Employee"));
 const LeaveManagementPage = lazy(() => import("../pages/hr-pages/LeaveManagementPage"));
@@ -22,6 +23,7 @@ const HRRoutes = [
   
     <Route path="/hr/dashboard" element={<AuthContext><Dashboard /></AuthContext>} />,
     <Route path="/hr/attendance" element={<AuthContext><AttendancePage /></AuthContext>} />,
+    <Route path="/hr/attendance/logs" element={<AuthContext><AttendanceLogPage /></AuthContext>} />,
     <Route path="/hr/attendance/today-presence" element={<AuthContext><TodaysPresence /></AuthContext>} />,
     <Route path="/hr/employee" element={<AuthContext><Employee /></AuthContext>} />,
     <Route path="/hr/leave-management" element={<AuthContext><LeaveManagementPage /></AuthContext>} />,

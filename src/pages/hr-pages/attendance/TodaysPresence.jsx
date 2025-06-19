@@ -2,7 +2,7 @@ import React, { lazy,Suspense } from "react";
 import ".././Dashboard.css";
 const Header = lazy(() => import("../../../components/Header"));
 const SideBar = lazy(() => import("../../../components/HRSideBar"));
-const TodaysPresencePageContent = lazy(() => import("./todays-presence/TodaysPresencePageContent"));
+const AttendanceFullLogs = lazy(() => import("./todays-presence/AttendanceFullLogs"));
 
 const TodaysPresence = () => {
   return (
@@ -12,7 +12,7 @@ const TodaysPresence = () => {
           <div className="main-layout">
               <SideBar />
                 <div className="content">
-                  <TodaysPresencePageContent />
+                  <AttendanceFullLogs />
                 </div>
           </div>
       </div>

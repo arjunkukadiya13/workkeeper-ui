@@ -3,10 +3,20 @@ import httpClient from "./httpClient";
 class AttendanceService {
 
     static async getUserAttendance(id) {
-        const response = await httpClient.get(`AttendanceLog/employee/${id}`);
+        const response = await httpClient.get(`Attendance/employee/${id}`);
         return response.data;
     }
     static async getUserAttendancePaginate(id, pageNumber = 1, pageSize = 10) {
+        const response = await httpClient.get(`Attendance/employee/paginated/${id}`, {
+            params: {
+                pageNumber,
+                pageSize
+            }
+        }
+        );
+        return response.data;
+    }
+    static async getUserAttendanceLogPaginated(id, pageNumber = 1, pageSize = 10) {
         const response = await httpClient.get(`AttendanceLog/employee/paginated/${id}`, {
             params: {
                 pageNumber,
@@ -16,7 +26,6 @@ class AttendanceService {
         );
         return response.data;
     }
-
     static async addUserAttendance(data) {
         const response = await httpClient.post("AttendanceLog", data)
         return response.data;

@@ -4,9 +4,10 @@ import { useSelector } from "react-redux";
 import AttendanceService from "../../../services/attendanceService";
 
 const AddAttendanceForm = lazy(() => import("./add/AddAttendanceForm"));
-const AttendanceLogDataPage = lazy(() => import("./data/AttendanceLogDataPage"));
-const FilterAttendanceLogs = lazy(() => import("./filter/FilterAttendanceLogs"));
+const AttendanceDataPage = lazy(() => import("./data/AttendanceDataPage"));
 const EditAttendanceModal = lazy(() => import("./edit/EditAttendanceModal"));
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 const EmployeeInformationWidget = lazy(() =>
   import("../../../components/employee-components/EmployeeInformationWidget")
 );
@@ -14,15 +15,15 @@ const EmployeeInformationWidget = lazy(() =>
 const UserAttendance = () => {
   const userData = useSelector((state) => state.userData);
   const [attendanceLogs, setAttendanceLogs] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [editingLog, setEditingLog] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
 
   const fetchAttendanceLogs = async (pageNumber = 1) => {
     try {
-      const response = await AttendanceService.getUserAttendancePaginate(userData.id, pageNumber,5);
+      const response = await AttendanceService.getUserAttendancePaginate(userData.id, pageNumber, 5);
       setAttendanceLogs(response.data);
       setTotalPages(response.totalPages);
       setPage(pageNumber);
@@ -37,7 +38,12 @@ const UserAttendance = () => {
 
   const onEditModelClose = () => {
     setEditingLog(null);
-    fetchAttendanceLogs(page); // maintain current page
+    fetchAttendanceLogs(page);
+  };
+
+  const showSuccessMessage = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => setSuccessMessage(""), 3000);
   };
 
   return (
@@ -49,31 +55,37 @@ const UserAttendance = () => {
         <EmployeeInformationWidget userData={userData} />
       </Suspense>
 
+      {/* Success Message */}
+      {successMessage && (
+        <div style={{ color: "green", marginBottom: "10px" }}>
+          {successMessage}
+        </div>
+      )}
+
       {/* Add Attendance Form */}
       <Suspense fallback={<div>Loading Add Form...</div>}>
         <AddAttendanceForm
           attendanceLogs={attendanceLogs}
           refreshAttendanceLogs={() => fetchAttendanceLogs(page)}
+          showSuccessMessage={showSuccessMessage}
         />
       </Suspense>
 
-      {/* Filter Logs by Date */}
-      <Suspense fallback={<div>Loading Filters...</div>}>
-        <FilterAttendanceLogs
-          userId={userData.id}
-          startDate={startDate}
-          endDate={endDate}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-          setAttendanceLogs={setAttendanceLogs}
-        />
-      </Suspense>
+      {/* View Full Logs Button */}
+      <div className="attendance-header-bar">
+        <Button
+          variant="contained"
+          onClick={() => navigate("logs")}
+          className="back-button"
+        >
+          View Full Logs
+        </Button>
+      </div>
 
       {/* Attendance Logs Table */}
-      <Suspense fallback={<div>Loading Attendance Logs...</div>}>
-        <AttendanceLogDataPage
-          attendanceLogs={attendanceLogs}
-          onEdit={setEditingLog}
+      <Suspense fallback={<div>Loading Attendance Summary...</div>}>
+        <AttendanceDataPage
+          attendanceData={attendanceLogs}
           page={page}
           totalPages={totalPages}
           onPageChange={fetchAttendanceLogs}

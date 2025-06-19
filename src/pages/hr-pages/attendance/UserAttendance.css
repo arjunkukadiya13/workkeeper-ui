@@ -73,6 +73,15 @@
     border: 1px solid #ccc;
     border-radius: 5px;
   }
+  .attendance-logs button {
+  background-color: #1976d2;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
   
   .add-attendance-form button {
     background-color: #1976d2;
