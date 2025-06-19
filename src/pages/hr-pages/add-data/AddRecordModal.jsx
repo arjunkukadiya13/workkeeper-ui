@@ -29,6 +29,11 @@ const formFieldsMap = {
     { name: "breakDuration", label: "Break Duration", type: "time" },
     { name: "endTime", label: "End Time", type: "time" },
   ],
+  holiday: [
+    { name: "name", label: "Holiday Name" },
+    { name: "startDate", label: "Start Date", type: "date" },
+    { name: "endDate", label: "End Date", type: "date" },
+  ],
 };
 
 const AddRecordModal = ({ open, onClose, onSubmit, tableType }) => {

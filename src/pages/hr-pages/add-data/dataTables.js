@@ -19,4 +19,9 @@ export const dataTables = {
     columns: ["Shift Name", "Start Time", "Break Duration", "End Time"],
     keys: ["shiftName", "startTime", "breakDuration", "endTime"]
   },
+  holiday:{
+    label:"Holiday",
+    columns: ["Name","Start Date","End Date"],
+    keys: ["name","startDate","endDate"]
+  }
 };

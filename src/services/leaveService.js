@@ -41,6 +41,10 @@ class LeaveService {
         });
         return response.data;
     }
+    static async addHoliday(data){
+        const response = await httpClient.post("/Holiday", data);
+        return response.data;
+    }
 
 
 }

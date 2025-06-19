@@ -3,8 +3,6 @@ import {
   CalendarDays,
   Users,
   Clock,
-  Info,
-  Home,
 } from "lucide-react";
 const InformationWidget = lazy(() => import("../../../components/InformationWidget"));
 import "./EmployeeDashboardContent.css";
@@ -18,7 +16,7 @@ const EmployeeDashboardContent = () => {
   const [attendanceLog, setAttendanceLog] = useState([]);
   const [presenceInfo, setPresenceInfo] = useState("Loading...");
   const userData = useSelector((state) => state.userData);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,16 +26,17 @@ const EmployeeDashboardContent = () => {
       const logs = await AttendanceService.getLastAttendanceLog(userData.id);
       setAttendanceLog(logs);
 
-      const today = new Date().toISOString().split("T")[0]; 
-      const todayLogs = logs.filter(log => log.date === today);
+      const today = new Date().toISOString().split("T")[0];
+      const todayLogs = logs.filter((log) => log.date === today);
 
       if (todayLogs.length === 0) {
-        // Absent case
-        const lastIn = logs.find(log => log.type === "In");
-        const lastOut = logs.find(log => log.type === "Out");
+        const lastIn = logs.find((log) => log.type === "In");
+        const lastOut = logs.find((log) => log.type === "Out");
 
         if (lastIn && lastOut) {
-          setPresenceInfo(`Last In: ${formatTime(lastIn.time)} (${lastIn.date}), Last Out: ${formatTime(lastOut.time)} (${lastOut.date})`);
+          setPresenceInfo(
+            `Last In: ${formatTime(lastIn.time)} (${lastIn.date}), Last Out: ${formatTime(lastOut.time)} (${lastOut.date})`
+          );
         } else if (lastIn) {
           setPresenceInfo(`Last In: ${formatTime(lastIn.time)} (${lastIn.date})`);
         } else if (lastOut) {
@@ -46,9 +45,8 @@ const EmployeeDashboardContent = () => {
           setPresenceInfo("No attendance logs found");
         }
       } else {
-        // Present case
-        const inLog = todayLogs.find(log => log.type === "In");
-        const outLog = todayLogs.find(log => log.type === "Out");
+        const inLog = todayLogs.find((log) => log.type === "In");
+        const outLog = todayLogs.find((log) => log.type === "Out");
 
         if (inLog && outLog) {
           setPresenceInfo(`In: ${formatTime(inLog.time)}, Out: ${formatTime(outLog.time)}`);
@@ -63,16 +61,14 @@ const EmployeeDashboardContent = () => {
     fetchData();
   }, [userData.id]);
 
+  // ✅ Format to Local Time
   const formatTime = (isoDateTimeString) => {
-    const [, timeWithOffset] = isoDateTimeString.split("T"); 
-    const [time] = timeWithOffset.split("+"); 
-    const [hours, minutes] = time.split(":");
-
-    const h = parseInt(hours, 10);
-    const suffix = h >= 12 ? "PM" : "AM";
-    const formattedHour = h % 12 === 0 ? 12 : h % 12;
-
-    return `${formattedHour}:${minutes} ${suffix}`;
+    const date = new Date(isoDateTimeString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
   };
 
   return (
@@ -89,11 +85,22 @@ const EmployeeDashboardContent = () => {
               }
               Icon={CalendarDays}
             />
-            <InformationWidget infotitle="Your Team" info={userData.teamName} Icon={Users} 
-              onClick={()=>{navigate("/employee/team")}}
+            <InformationWidget
+              infotitle="Your Team"
+              info={userData.teamName}
+              Icon={Users}
+              onClick={() => {
+                navigate("/employee/team");
+              }}
             />
-            <InformationWidget infotitle="Your Presence" info={presenceInfo} Icon={Clock} />
-            <InformationWidget infotitle="Quick Info" info={`Manager: Alice, ID: ${userData.id}`} Icon={Info} />
+            <InformationWidget
+              infotitle="Your Presence"
+              info={presenceInfo}
+              Icon={Clock}
+              onClick={() => {
+                navigate("/employee/attendance");
+              }}
+            />
           </div>
         </div>
       </div>

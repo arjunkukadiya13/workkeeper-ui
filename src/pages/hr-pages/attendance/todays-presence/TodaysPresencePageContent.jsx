@@ -7,9 +7,11 @@ import { useNavigate } from "react-router-dom";
 const TodaysPresencePageContent = () => {
   const [employees, setEmployees] = useState([]);
   const navigate = useNavigate()
-  const fetchTodaysPresence = async () => {
+ const fetchTodaysPresence = async () => {
     try {
-      const data = await AttendanceService.todaysPresentEmployees("2025-05-29");
+      const todayDate = new Date().toISOString().split("T")[0];
+      const data = await AttendanceService.todaysPresentEmployees(todayDate);
+      console.log(data)
       setEmployees(data);
     } catch (error) {
       console.error("Failed to fetch today's presence:", error);

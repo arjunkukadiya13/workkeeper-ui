@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { TextField, Button, Card, Typography, InputAdornment, IconButton, CircularProgress } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Card,
+  Typography,
+  InputAdornment,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
@@ -25,25 +33,35 @@ const LoginPage = () => {
       setError("Please enter both email and password.");
       return;
     }
+
     setLoading(true);
-    const data = await AuthService.login(email, password);
-    dispatch(userLogin());
-    dispatch(setAuthToken(data.token));
-    dispatch(setLoginId(data.user.id));
-    if (data.user.isFirstLogin == true) {
-      navigate("/create-new-password");
-    } else {
-      dispatch(setUserData(await EmployeeService.getEmployeeByEmail(email)))
-      const roleName = data.user.roleName.toLowerCase();
-      setLoading(false);
-      if (roleName == "hr manager") {
-        navigate("/hr/dashboard");
-      } else if (roleName == "employee") {
-        navigate("/employee/dashboard");
+    setError(""); // Clear any previous error
 
+    try {
+      const data = await AuthService.login(email, password);
+      dispatch(userLogin());
+      dispatch(setAuthToken(data.token));
+      dispatch(setLoginId(data.user.id));
+
+      if (data.user.isFirstLogin) {
+        navigate("/create-new-password");
+      } else {
+        const userInfo = await EmployeeService.getEmployeeByEmail(email);
+        dispatch(setUserData(userInfo));
+        const roleName = data.user.roleName.toLowerCase();
+
+        if (roleName === "hr manager") {
+          navigate("/hr/dashboard");
+        } else if (roleName === "employee") {
+          navigate("/employee/dashboard");
+        }
       }
+    } catch (err) {
+      console.error("Login failed:", err);
+      setError("Invalid email or password.");
+    } finally {
+      setLoading(false);
     }
-
   };
 
   const handleTogglePassword = () => {
@@ -53,7 +71,9 @@ const LoginPage = () => {
   return (
     <div className="login-container">
       <Card className="login-card">
-        <Typography variant="h5" className="login-title">WorkKeeper Login</Typography>
+        <Typography variant="h5" className="login-title">
+          WorkKeeper Login
+        </Typography>
 
         <TextField
           label="Email"
@@ -83,7 +103,11 @@ const LoginPage = () => {
           }}
         />
 
-        {error && <Typography color="error" className="error-message">{error}</Typography>}
+        {error && (
+          <Typography color="error" className="error-message">
+            {error}
+          </Typography>
+        )}
 
         <Button
           variant="contained"
@@ -91,14 +115,22 @@ const LoginPage = () => {
           fullWidth
           className="login-button"
           onClick={handleLogin}
+          disabled={loading}
         >
-          Login
+          {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
         </Button>
 
         <div className="login-links">
-          <a href="/forgot-password" className="forgot-password"
-            onClick={() => { navigate("/forgot-password") }}
-          >Forgot Password?</a>
+          <a
+            href="/forgot-password"
+            className="forgot-password"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/forgot-password");
+            }}
+          >
+            Forgot Password?
+          </a>
         </div>
       </Card>
     </div>

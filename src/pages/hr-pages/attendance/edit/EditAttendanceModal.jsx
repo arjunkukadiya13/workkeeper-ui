@@ -7,35 +7,32 @@ const EditAttendanceModal = ({ log, onClose }) => {
   const userData = useSelector((state) => state.userData);
 
   const [editedLog, setEditedLog] = useState({
+    id: 0,
     date: "",
     time: "",
     type: "",
+    employeeId: userData.id,
     source: ""
   });
 
-  const [preview12HourTime, setPreview12HourTime] = useState("");
-
   useEffect(() => {
     if (log) {
-      const istDate = new Date(log.time);
-      const hours = istDate.getHours().toString().padStart(2, "0");
-      const minutes = istDate.getMinutes().toString().padStart(2, "0");
-
-      const time24 = `${hours}:${minutes}`;
-      const time12 = istDate.toLocaleTimeString("en-IN", {
+      // Convert UTC time to local time string for input field
+      const utcDateTime = new Date(log.time);
+      const localTimeString = utcDateTime.toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
-        hour12: true,
-        timeZone: "Asia/Kolkata"
+        hour12: false
       });
 
       setEditedLog({
+        id: log.id,
         date: log.date,
-        time: time24,
+        time: localTimeString, // local time string like "14:30"
         type: log.type,
+        employeeId: userData.id,
         source: log.source
       });
-      setPreview12HourTime(time12);
     }
   }, [log]);
 
@@ -44,47 +41,27 @@ const EditAttendanceModal = ({ log, onClose }) => {
       ...prev,
       [field]: value
     }));
-
-    if (field === "time") {
-      const [hour, minute] = value.split(":");
-      const date = new Date();
-      date.setHours(parseInt(hour));
-      date.setMinutes(parseInt(minute));
-      setPreview12HourTime(
-        date.toLocaleTimeString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-          timeZone: "Asia/Kolkata"
-        })
-      );
-    }
   };
 
   const handleSave = async () => {
-    if (!editedLog.date || !editedLog.time || !editedLog.type) {
-      alert("Please fill all fields!");
-      return;
-    }
-
-    const localDateTime = new Date(`${editedLog.date}T${editedLog.time}:00`);
-    const utcDateTime = localDateTime.toISOString();
-
-    const payload = {
-      id: log.id,
-      employeeId: log.employeeId,
-      type: editedLog.type,
-      source: editedLog.source,
-      time: utcDateTime,
-      date: editedLog.date,
-      updatedAt: new Date().toISOString()
-    };
-
     try {
+      // Create a Date object from local date and time (do not add 'Z')
+      const localDateTime = new Date(`${editedLog.date}T${editedLog.time}`);
+
+      const payload = {
+        id: editedLog.id,
+        employeeId: editedLog.employeeId,
+        date: editedLog.date,
+        time: localDateTime.toISOString(), // Save as UTC
+        type: editedLog.type,
+        source: editedLog.source,
+        updatedAt: new Date().toISOString()
+      };
+
       await AttendanceService.updateAttendance(payload.id, payload);
       onClose();
-    } catch (err) {
-      console.error("Failed to update attendance:", err);
+    } catch (error) {
+      console.error("Failed to update attendance log:", error);
     }
   };
 
@@ -111,7 +88,6 @@ const EditAttendanceModal = ({ log, onClose }) => {
             value={editedLog.time}
             onChange={(e) => handleChange("time", e.target.value)}
           />
-          <small>Preview: {preview12HourTime}</small>
         </div>
 
         <div className="modal-field">
@@ -131,8 +107,12 @@ const EditAttendanceModal = ({ log, onClose }) => {
         </div>
 
         <div className="modal-actions">
-          <button className="btn-primary" onClick={handleSave}>Save</button>
-          <button className="btn-secondary" onClick={onClose}>Cancel</button>
+          <button className="btn-primary" onClick={handleSave}>
+            Save
+          </button>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>

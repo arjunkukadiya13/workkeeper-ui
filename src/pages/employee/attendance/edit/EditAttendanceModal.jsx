@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./EditAttendanceModal.css";
 import { useSelector } from "react-redux";
 import AttendanceService from "../../../../services/attendanceService";
+import NotificationService from "../../../../services/notificationService";
 
 const EditAttendanceModal = ({ log, onClose }) => {
   const userData = useSelector((state) => state.userData);
@@ -17,10 +18,17 @@ const EditAttendanceModal = ({ log, onClose }) => {
 
   useEffect(() => {
     if (log) {
+      const utcDateTime = new Date(log.time);
+      const localTimeString = utcDateTime.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      });
+
       setEditedLog({
         id: log.id,
         date: log.date,
-        time: log.time?.substring(11, 16) || "", 
+        time: localTimeString,
         type: log.type,
         employeeId: userData.id,
         source: log.source
@@ -37,19 +45,32 @@ const EditAttendanceModal = ({ log, onClose }) => {
 
   const handleSave = async () => {
     try {
-      const combinedTime = new Date(`${editedLog.date}T${editedLog.time}:00Z`).toISOString();
+
+      const localDateTime = new Date(`${editedLog.date}T${editedLog.time}`);
 
       const payload = {
         id: editedLog.id,
         employeeId: editedLog.employeeId,
         date: editedLog.date,
-        time: combinedTime,
+        time: localDateTime.toISOString(), // Save as UTC
         type: editedLog.type,
         source: editedLog.source,
         updatedAt: new Date().toISOString()
       };
 
       await AttendanceService.updateAttendance(payload.id, payload);
+      const message = `${userData.name} edited their attendance log on ${editedLog.date} at ${editedLog.time} (Type: ${editedLog.type}).`;
+
+      const notificationPayload = {
+        employeeId: 1, 
+        message: message,
+        messageType: "Attendance Update",
+        sentFrom: editedLog.employeeId,
+        isRead: false,
+        readAt: null,
+        sentAt: new Date().toISOString()
+      };
+      await NotificationService.newLeaveNotification(notificationPayload)
       onClose();
     } catch (error) {
       console.error("Failed to update attendance log:", error);
@@ -98,8 +119,12 @@ const EditAttendanceModal = ({ log, onClose }) => {
         </div>
 
         <div className="modal-actions">
-          <button className="btn-primary" onClick={handleSave}>Save</button>
-          <button className="btn-secondary" onClick={onClose}>Cancel</button>
+          <button className="btn-primary" onClick={handleSave}>
+            Save
+          </button>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>

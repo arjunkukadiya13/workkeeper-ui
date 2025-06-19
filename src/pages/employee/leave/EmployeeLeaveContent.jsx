@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./EmployeeLeaveContent.css";
-import {
-  Typography,
-  TextField,
-  MenuItem,
-  Button,
-  Select,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
 import LeaveService from "../../../services/leaveService";
 import EmployeeService from "../../../services/employeeService";
 import { useSelector } from "react-redux";
@@ -146,15 +137,20 @@ const EmployeeLeaveContent = () => {
   };
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadInitialData = async () => {
       await fetchLeaveTypes();
       await fetchHRDetails();
-      await fetchLeaves();
       await calculateLeaveBalance();
     };
 
-    loadData();
+    loadInitialData();
   }, []);
+
+  useEffect(() => {
+    if (leaveTypes.length > 0 && ccOptions.length > 0) {
+      fetchLeaves();
+    }
+  }, [leaveTypes, ccOptions]);
 
   return (
     <div className="employee-leave-container">

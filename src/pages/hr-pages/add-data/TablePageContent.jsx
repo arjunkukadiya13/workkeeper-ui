@@ -15,6 +15,7 @@ function TablePageContent() {
   const [openModal, setOpenModal] = useState(false);
 
   const fetchTableData = async () => {
+    const todayDate = new Date().toISOString().split("T")[0];
     try {
       let data = [];
       switch (selectedTable) {
@@ -29,6 +30,9 @@ function TablePageContent() {
           break;
         case "shift":
           data = await ShiftService.getShifts();
+          break;
+        case "holiday":
+          data = await LeaveService.getUpcomingHoliday(todayDate);
           break;
         default:
           data = [];
@@ -58,6 +62,9 @@ function TablePageContent() {
           break;
         case "shift":
           await ShiftService.addShift(formData);
+          break;
+        case "holiday":
+          await LeaveService.addHoliday(formData);
           break;
       }
       setOpenModal(false);
