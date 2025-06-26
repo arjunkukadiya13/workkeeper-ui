@@ -1,13 +1,26 @@
 import axios from "axios";
 import API_CONFIG from "./config";
+import { store } from "../data/store";
 
+// Create axios instance
 const httpClient = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
   headers: API_CONFIG.HEADERS,
 });
 
-// Global error handling
+httpClient.interceptors.request.use(
+  (config) => {
+    const state = store.getState();
+    const token = state.authToken;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 httpClient.interceptors.response.use(
   (response) => response,
   (error) => {
